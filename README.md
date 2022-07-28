@@ -272,3 +272,4 @@ as an open-source patch. For more detailed information, refer to [CONTRIBUTING.m
 
 ## License
 
+Refer to [LICENSE](LICENSE) for details.
