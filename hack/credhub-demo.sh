@@ -67,8 +67,6 @@ function setup() {
 
   printf "Run: %s\n" "curl -sk https://secure-credentials-demo-$CF_SOURCE_ORG-$CF_SOURCE_SPACE.$CF_SOURCE_APPS_DOMAIN/actuator/env | jq -r '.propertySources[] | select(.name == \"vcap\")'"
   read -rp "Press return when finished." -n 1 -r
-
-  echo "Setup complete!"
 }
 
 function install_bin() {
@@ -81,7 +79,7 @@ fi
 function run() {
   install_bin
   export_dir=$(mktemp -d)
-  echo "Exporting credhub to: $export_dir"
+
   "$BIN_DIR"/service-instance-migrator export space "$CF_SOURCE_SPACE" -o "$CF_SOURCE_ORG" --export-dir="$export_dir" --services="credhub" || die "failed to run service-instance-migrator export space $CF_SOURCE_SPACE -o $CF_SOURCE_ORG --export-dir=$export_dir"
 
   login_tas2 || die "failed to run login to target foundation"
@@ -98,7 +96,6 @@ function run() {
   read -rp "Press return when finished." -n 1 -r
 
   echo "See $export_dir for migrated data"
-  echo "Demo complete!"
 }
 
 cd "$ROOT_DIR/.." || exit 1
