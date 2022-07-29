@@ -2,6 +2,9 @@
 /bin
 /dist
 
+# run artifacts
+/si-migrator.yml
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
