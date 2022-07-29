@@ -1,5 +1,7 @@
 # service-instance-migrator-for-cloud-foundry
 
+[![build workflow](https://github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/actions/workflows/build.yml)
+
 ## Overview
 
 The `service-instance-migrator` is a command-line tool for migrating [Service Instances](https://docs.cloudfoundry.org/devguide/services/) from one [Cloud Foundry](https://docs.cloudfoundry.org/) (CF) or [Tanzu Application Service](https://tanzu.vmware.com/application-service) (TAS) to another. The `service-instance-migrator` currently only supports TAS deployments because it relies on the Ops Manager API to execute some of its underlying commands. However, this dependency is mostly to ease the burden on providing all the configuration necessary for running a migration. And it's a near-term goal to remove Ops Manager as a required dependency.
