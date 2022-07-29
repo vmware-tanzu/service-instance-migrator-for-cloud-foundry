@@ -4,6 +4,17 @@
 
 The `service-instance-migrator` is a command-line tool for migrating [Service Instances](https://docs.cloudfoundry.org/devguide/services/) from one [Cloud Foundry](https://docs.cloudfoundry.org/) (CF) or [Tanzu Application Service](https://tanzu.vmware.com/application-service) (TAS) to another. The `service-instance-migrator` currently only supports TAS deployments because it relies on the Ops Manager API to execute some of its underlying commands. However, this dependency is mostly to ease the burden on providing all the configuration necessary for running a migration. And it's a near-term goal to remove Ops Manager as a required dependency.
 
+## Prerequisites
+
+The `service-instance-migrator` relies on the following tools to execute in a shell during the migration process. Please
+ensure these are installed prior to running any `export` or `import` commands.
+
+- [om](https://github.com/pivotal-cf/om)
+- [bosh-cli](https://bosh.io/docs/cli-v2)
+- [cf-cli](https://code.cloudfoundry.org/cli)
+- [credhub-cli](https://github.com/cloudfoundry-incubator/credhub-cli)
+- [jq](https://stedolan.github.io/jq)
+
 ## Supported Service Instance Types
 
 The following service types are currently implemented:
@@ -25,18 +36,37 @@ More to come in the future:
 - SMB
 - AppD
 
-## Prerequisites
+## CC API Object to Migration Process Mapping
 
-The `service-instance-migrator` relies on the following tools to execute in a shell during the migration process. Please
-ensure these are installed prior to running any `export` or `import` commands.
+- Applications                      - App-Migrator
+- Application Environment Variables - App-Migrator
+- Buildpacks                        - Other
+- Default Security Groups           - Other
+- Feature Flags                     - Other
+- Private Domains                   - CF-Mgmt
+- Shared Domains                    - CF-Mgmt
+- Routes                            - App-Migrator
+- Route Mappings                    - App-Migrator
+- Quota Definitions                 - CF-Mgmt
+- Application Security Groups       - CF-Mgmt
+- Services                          - Other
+- Service Brokers                   - Other
+- Service Plans                     - CF-Mgmt
+- Service Plan Visibility           - CF-Mgmt
+- Service Keys                      - Other
+- Managed Service Instances         - Service-Instance-Migrator
+- User Provided Services            - Service-Instance-Migrator
+- Service Bindings                  - App-Migrator
+- Orgs                              - CF-Mgmt
+- Spaces                            - CF-Mgmt
+- Space Quotas                      - CF-Mgmt
+- Isolation Segments                - CF-Mgmt
+- Stacks                            - Other
+- Local UAA Users/Clients           - Other
+- LDAP Users                        - CF-Mgmt
+- Roles                             - CF-Mgmt
 
-- [om](https://github.com/pivotal-cf/om)
-- [bosh-cli](https://bosh.io/docs/cli-v2)
-- [cf-cli](https://code.cloudfoundry.org/cli)
-- [credhub-cli](https://github.com/cloudfoundry-incubator/credhub-cli)
-- [jq](https://stedolan.github.io/jq)
-
-## Running
+## Documentation
 
 The `service-instance-migrator` requires user credentials or client credentials to communicate with the Cloud Foundry Cloud Controller API.
 
@@ -178,35 +208,23 @@ so it's not required to set them. Command line flags always override any values 
 We will retrieve the encryption key and credentials for the cloud-controller database for the `ecs` and `sqlserver` migrations if
 you do not specify these values, however, it does add extra time to the migration to retrieve them.
 
-## CC API Object to Migration Process Mapping
+### Export
 
-- Applications                      - App-Migrator
-- Application Environment Variables - App-Migrator
-- Buildpacks                        - Other
-- Default Security Groups           - Other
-- Feature Flags                     - Other
-- Private Domains                   - CF-Mgmt
-- Shared Domains                    - CF-Mgmt
-- Routes                            - App-Migrator
-- Route Mappings                    - App-Migrator
-- Quota Definitions                 - CF-Mgmt
-- Application Security Groups       - CF-Mgmt
-- Services                          - Other
-- Service Brokers                   - Other
-- Service Plans                     - CF-Mgmt
-- Service Plan Visibility           - CF-Mgmt
-- Service Keys                      - Other
-- Managed Service Instances         - Service-Instance-Migrator
-- User Provided Services            - Service-Instance-Migrator
-- Service Bindings                  - App-Migrator
-- Orgs                              - CF-Mgmt
-- Spaces                            - CF-Mgmt
-- Space Quotas                      - CF-Mgmt
-- Isolation Segments                - CF-Mgmt
-- Stacks                            - Other
-- Local UAA Users/Clients           - Other
-- LDAP Users                        - CF-Mgmt
-- Roles                             - CF-Mgmt
+Running `export` without any flags will export all service instances of all supported types from the source foundation. This may take a long time depending on how many service instances you have in your source foundation.
+
+```shell
+service-instance-migrator export
+```
+
+### Import
+
+Running `import` does the opposite of `export` and as you may have guessed, uses the output from export as it's input. This command will take all the service instances found in the export directory and attempt to import them into the target foundation.
+
+```shell
+service-instance-migrator import
+```
+
+Check out the [docs](./docs/si-migrator.md) to see usage for all the commands.
 
 ## Logs
 
@@ -242,26 +260,6 @@ make release
 ```
 
 Run `make help` for all other tasks.
-
-## Documentation
-
-Check out the [docs](./docs/si-migrator.md) to see usage for all the commands.
-
-### Export
-
-Running `export` without any flags will export all service instances of all supported types from the source foundation. This may take a long time depending on how many service instances you have in your source foundation.
-
-```shell
-service-instance-migrator export
-```
-
-### Import
-
-Running `import` does the opposite of `export` and as you may have guessed, uses the output from export as it's input. This command will take all the service instances found in the export directory and attempt to import them into the target foundation.
-
-```shell
-service-instance-migrator import
-```
 
 ## Contributing
 
