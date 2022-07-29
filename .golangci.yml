@@ -1,0 +1,5 @@
+# This file contains the golangci-lint configuration
+
+# list of enabled linters
+enable:
+  - goimports
