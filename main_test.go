@@ -19,7 +19,7 @@ package main_test
 
 import (
 	"fmt"
-	"github.com/vmware-tanzu-labs/service-instance-migrator/pkg/migrate"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/migrate"
 	"go/build"
 	"io/ioutil"
 	"net/url"
@@ -32,13 +32,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vmware-tanzu-labs/service-instance-migrator/pkg/bosh"
-	"github.com/vmware-tanzu-labs/service-instance-migrator/pkg/cf"
-	"github.com/vmware-tanzu-labs/service-instance-migrator/pkg/config"
-	"github.com/vmware-tanzu-labs/service-instance-migrator/pkg/credhub"
-	"github.com/vmware-tanzu-labs/service-instance-migrator/pkg/io"
-	"github.com/vmware-tanzu-labs/service-instance-migrator/pkg/log"
-	"github.com/vmware-tanzu-labs/service-instance-migrator/pkg/om"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/cf"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/config"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/credhub"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/io"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/log"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/om"
 
 	"github.com/cloudfoundry-community/go-cfclient"
 	"github.com/stretchr/testify/assert"
@@ -46,7 +46,7 @@ import (
 )
 
 const (
-	packagePath   = "github.com/vmware-tanzu-labs/service-instance-migrator/cmd/si-migrator"
+	packagePath   = "github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/cmd/si-migrator"
 	exportOrgName = "tas1-test-org"
 	importOrgName = "tas2-test-org"
 	spaceName     = "si-migrator-test-space"

@@ -8,10 +8,10 @@ GOBIN ?= $(shell go env GOPATH)/bin
 VERSION ?= $(shell ./hack/next-version)
 GITSHA = $(shell git rev-parse HEAD)
 GITDIRTY = $(shell git diff --quiet HEAD || echo "dirty")
-LDFLAGS_VERSION = -X github.com/vmware-tanzu-labs/service-instance-migrator/pkg/cli.cliName=$(SI_MIGRATOR_NAME) \
-				  -X github.com/vmware-tanzu-labs/service-instance-migrator/pkg/cli.cliVersion=$(VERSION) \
-				  -X github.com/vmware-tanzu-labs/service-instance-migrator/pkg/cli.cliGitSHA=$(GITSHA) \
-				  -X github.com/vmware-tanzu-labs/service-instance-migrator/pkg/cli.cliGitDirty=$(GITDIRTY)
+LDFLAGS_VERSION = -X github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/cli.cliName=$(SI_MIGRATOR_NAME) \
+				  -X github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/cli.cliVersion=$(VERSION) \
+				  -X github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/cli.cliGitSHA=$(GITSHA) \
+				  -X github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/cli.cliGitDirty=$(GITDIRTY)
 .DEFAULT_GOAL := help
 
 .PHONY: all
