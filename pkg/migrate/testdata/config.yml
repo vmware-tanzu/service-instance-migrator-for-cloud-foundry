@@ -1,0 +1,24 @@
+---
+migrators:
+  - name: some_key
+    migrator:
+      source_ccdb:
+        db_host: 192.168.1.1
+        db_username: db-tas1-user
+        db_password: db-tas1-password
+        db_encryption_key: enc-tas1-key
+        ssh_host: 10.10.10.1
+        ssh_username: ssh-tas1-user
+        ssh_password: ssh-tas1-password
+        ssh_private_key: /path/to/tas1/ssh-key
+        ssh_tunnel: false
+      target_ccdb:
+        db_host: 192.168.1.2
+        db_username: db-tas2-user
+        db_password: db-tas2-password
+        db_encryption_key: enc-tas2-key
+        ssh_host: 10.10.10.2
+        ssh_username: ssh-tas2-user
+        ssh_password: ssh-tas2-password
+        ssh_private_key: /path/to/tas2/ssh-key
+        ssh_tunnel: false

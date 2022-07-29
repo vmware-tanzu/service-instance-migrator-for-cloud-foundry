@@ -1,0 +1,38 @@
+{
+  "AccessToken": "bearer fakeaccesstoken",
+  "APIVersion": "3.74.0",
+  "AsyncTimeout": 0,
+  "AuthorizationEndpoint": "https://uaa.sys.cf.example.com",
+  "ColorEnabled": "",
+  "ConfigVersion": 4,
+  "DopplerEndPoint": "wss://doppler.sys.cf.example.com:443",
+  "Locale": "",
+  "LogCacheEndPoint": "https://log-cache.sys.cf.example.com",
+  "MinCLIVersion": "6.23.0",
+  "MinRecommendedCLIVersion": "",
+  "OrganizationFields": {
+    "GUID": "0164852d-2743-4570-a44f-54a87a764bc5",
+    "Name": "cloudfoundry"
+  },
+  "PluginRepos": [
+    {
+      "Name": "CF-Community",
+      "URL": "https://plugins.cloudfoundry.org"
+    }
+  ],
+  "RefreshToken": "fakerefreshtoken",
+  "RoutingAPIEndpoint": "https://api.sys.cf.example.com/routing",
+  "SpaceFields": {
+    "GUID": "9f61995e-674c-47e8-ac1b-7b6c8c3f9a87",
+    "Name": "test-app",
+    "AllowSSH": true
+  },
+  "SSHOAuthClient": "ssh-proxy",
+  "SSLDisabled": true,
+  "Target": "https://api.sys.cf.example.com",
+  "Trace": "",
+  "UaaEndpoint": "https://uaa.sys.cf.example.com",
+  "UAAGrantType": "",
+  "UAAOAuthClient": "cf",
+  "UAAOAuthClientSecret": ""
+}

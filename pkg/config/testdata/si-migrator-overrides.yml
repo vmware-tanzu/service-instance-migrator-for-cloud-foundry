@@ -1,0 +1,9 @@
+export_dir: "service-export-override"
+exclude_orgs:
+  - org1-override
+  - org2-override
+domains_to_replace:
+  apps.cf3.example.com: apps.cf4.example.com
+dry_run: false
+debug: false
+skip_update: false

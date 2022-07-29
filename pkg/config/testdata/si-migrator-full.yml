@@ -1,0 +1,133 @@
+export_dir: "service-export"
+exclude_orgs:
+  - org1
+  - org2
+domains_to_replace:
+  apps.cf1.example.com: apps.cf2.example.com
+ignore_service_keys: true
+source_api:
+  url: https://api.cf1.example.com
+  username: cf1-api-username
+  password: cf1-api-password
+  client_id: cf1-api-client
+  client_secret: cf1-api-client-secret
+target_api:
+  url: https://api.cf2.example.com
+  username: cf2-api-username
+  password: cf2-api-password
+  client_id: cf2-api-client
+  client_secret: cf2-api-client-secret
+source_bosh:
+  url: some-url
+  all_proxy: some-proxy-url
+  root_ca_cert: some-cert
+  authentication:
+    basic:
+      username: some-username
+      password: some-password
+    uaa:
+      url: some-url
+      client_credentials:
+        client_id: some-client-id
+        client_secret: some-client-secret
+      user_credentials:
+        username: some-username
+        password: some-password
+target_bosh:
+  url: some-url
+  all_proxy: some-proxy-url
+  root_ca_cert: some-cert
+  authentication:
+    basic:
+      username: some-username
+      password: some-password
+    uaa:
+      url: some-url
+      client_credentials:
+        client_id: some-client-id
+        client_secret: some-client-secret
+      user_credentials:
+        username: some-username
+        password: some-password
+foundations:
+  source:
+    url: https://opsman.source.example.com
+    client_id: fake-client-id
+    client_secret: fake-client-secret
+    username: fake-user
+    password: fake-password
+    ip: 1.1.1.1
+    hostname: opsman1.example.com
+    private_key: /path/to/om1_rsa_key
+    ssh_user: "ubuntu"
+  target:
+    url: https://opsman.target.example.com
+    client_id: fake-client-id
+    client_secret: fake-client-secret
+    username: fake-user
+    password: fake-password
+    ip: 1.1.1.2
+    hostname: opsman2.example.com
+    private_key: /path/to/om2_rsa_key
+    ssh_user: "ubuntu"
+migration:
+  use_default_migrator: true
+  migrators:
+    - name: sqlserver
+      migrator:
+        source_ccdb:
+          db_host: 192.168.11.24
+          db_username: tas1_ccdb_username
+          db_password: tas1_ccdb_password
+          db_encryption_key: tas1_ccdb_enc_key
+          ssh_host: opsman1.example.com
+          ssh_username: ubuntu
+          ssh_private_key: /tmp/om1_rsa_key
+          ssh_tunnel: true
+        target_ccdb:
+          db_host: 192.168.12.24
+          db_username: tas2_ccdb_username
+          db_password: tas2_ccdb_password
+          db_encryption_key: tas2_ccdb_enc_key
+          ssh_host: opsman2.example.com
+          ssh_username: ubuntu
+          ssh_private_key: /tmp/om2_rsa_key
+          ssh_tunnel: true
+    - name: ecs
+      migrator:
+        source_ccdb:
+          db_host: 192.168.11.24
+          db_username: tas1_ccdb_username
+          db_password: tas1_ccdb_password
+          db_encryption_key: tas1_ccdb_enc_key
+          ssh_host: opsman1.example.com
+          ssh_username: ubuntu
+          ssh_private_key: /tmp/om1_rsa_key
+          ssh_tunnel: true
+        target_ccdb:
+          db_host: 192.168.12.24
+          db_username: tas2_ccdb_username
+          db_password: tas2_ccdb_password
+          db_encryption_key: tas2_ccdb_enc_key
+          ssh_host: opsman2.example.com
+          ssh_username: ubuntu
+          ssh_private_key: /tmp/om2_rsa_key
+          ssh_tunnel: true
+    - name: mysql
+      migrator:
+        backup_type: minio
+        backup_directory: /tmp/mysql-backup
+        minio:
+          alias: ecs-blobstore
+          url: https://object.example.com:9021
+          access_key: blobstore_access_key
+          secret_key: blobstore_secret_key
+          bucket_name: mysql-tas1
+          bucket_path: p.mysql
+          insecure: false
+        scp:
+          username: mysql
+          hostname: mysql-backup.example.com
+          port: 22
+          destination_directory: /var/vcap/data/mysql/backups
+          private_key: /tmp/backup_rsa_key

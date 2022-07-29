@@ -1,0 +1,29 @@
+foundations:
+  source:
+    url: https://opsman.source.example.com
+    client_id: fake-client-id
+    client_secret: fake-client-secret
+    username: fake-user
+    password: fake-password
+    ip: 1.1.1.1
+    hostname: opsman1.example.com
+    private_key: /path/to/om1_rsa_key
+    ssh_user: "ubuntu"
+  target:
+    url: https://opsman.target.example.com
+    client_id: fake-client-id
+    client_secret: fake-client-secret
+    username: fake-user
+    password: fake-password
+    ip: 1.1.1.2
+    hostname: opsman2.example.com
+    private_key: /path/to/om2_rsa_key
+    ssh_user: "ubuntu"
+migration:
+  migrators:
+  - name: some_key
+    migrator:
+      source_ccdb:
+        ssh_tunnel: true
+      target_ccdb:
+        ssh_tunnel: true

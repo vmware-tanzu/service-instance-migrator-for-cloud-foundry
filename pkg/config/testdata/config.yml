@@ -1,0 +1,14 @@
+---
+foundations:
+  source:
+    password: fake-password
+    url: https://opsman.source.example.com
+    client_id: "fake-client-id"
+    client_secret: "fake-client-secret"
+    username: fake-user
+  target:
+    password: fake-password
+    url: https://opsman.target.example.com
+    client_id: "fake-client-id"
+    client_secret: "fake-client-secret"
+    username: fake-user

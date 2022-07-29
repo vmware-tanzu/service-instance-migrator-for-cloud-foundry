@@ -1,0 +1,7 @@
+name: cups-test
+guid: 4156a4a0-6092-40ab-98bf-114051d1561d
+type: user_provided_service_instance
+service: cups-test
+credentials:
+  password: pa55woRD
+  username: admin

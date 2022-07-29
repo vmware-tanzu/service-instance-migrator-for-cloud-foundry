@@ -1,0 +1,7 @@
+name: si-migrator-ups
+guid: 3401f81f-d74f-42e7-9339-1098e64d76cd
+type: user_provided_service_instance
+service: si-migrator-ups
+credentials:
+  password: secret
+  username: admin

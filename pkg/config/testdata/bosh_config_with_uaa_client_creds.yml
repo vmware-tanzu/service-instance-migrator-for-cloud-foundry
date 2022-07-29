@@ -1,0 +1,51 @@
+foundations:
+  source:
+    url: https://opsman-1.src.tas.example.com
+    client_id: ""
+    client_secret: ""
+    username: admin-om1
+    password: some-om1-password
+    hostname: opsman-1.src.tas.example.com
+    private_key: /Users/user/.ssh/opsman1
+    ssh_user: ubuntu-1
+  target:
+    url: https://opsman-2.dst.tas.example.com
+    client_id: ""
+    client_secret: ""
+    username: admin-om2
+    password: some-om2-password
+    hostname: opsman-2.dst.tas.example.com
+    private_key: /Users/user/.ssh/opsman2
+    ssh_user: ubuntu-2
+source_api:
+  url: https://api.src.tas.example.com
+  username: ""
+  password: ""
+  client_id: client-with-cloudcontroller-admin-permissions
+  client_secret: client-secret
+target_api:
+  url: https://api.dst.tas.example.com
+  username: ""
+  password: ""
+  client_id: client-with-cloudcontroller-admin-permissions
+  client_secret: client-secret
+source_bosh:
+  url: some-url
+  all_proxy: some-proxy-url
+  root_ca_cert: some-cert
+  authentication:
+    uaa:
+      url: some-url
+      client_credentials:
+        client_id: some-client-id
+        client_secret: some-client-secret
+target_bosh:
+  url: some-url
+  all_proxy: some-proxy-url
+  root_ca_cert: some-cert
+  authentication:
+    uaa:
+      url: some-url
+      client_credentials:
+        client_id: some-client-id
+        client_secret: some-client-secret

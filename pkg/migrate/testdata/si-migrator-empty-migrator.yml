@@ -1,0 +1,24 @@
+foundations:
+  source:
+    url: https://opsman.source.example.com
+    client_id: fake-client-id
+    client_secret: fake-client-secret
+    username: fake-user
+    password: fake-password
+    ip: 1.1.1.1
+    hostname: opsman.source.example.com
+    private_key: /path/to/om1_ssh_key
+    ssh_user: some-om1-ssh-user
+  target:
+    url: https://opsman.target.example.com
+    client_id: fake-client-id
+    client_secret: fake-client-secret
+    username: fake-user
+    password: fake-password
+    ip: 1.1.1.2
+    hostname: opsman.target.example.com
+    private_key: /path/to/om2_ssh_key
+    ssh_user: some-om2-ssh-user
+migration:
+  migrators:
+  - name: sqlserver

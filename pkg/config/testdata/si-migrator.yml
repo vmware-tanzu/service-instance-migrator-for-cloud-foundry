@@ -1,0 +1,40 @@
+export_dir: "service-export"
+exclude_orgs:
+  - org1
+  - org2
+domains_to_replace:
+  apps.cf1.example.com: apps.cf2.example.com
+source_api:
+  url: https://api.cf1.example.com
+  username: cf1-api-username
+  password: cf1-api-password
+  client_id: cf1-api-client
+  client_secret: cf1-api-client-secret
+target_api:
+  url: https://api.cf2.example.com
+  username: cf2-api-username
+  password: cf2-api-password
+  client_id: cf2-api-client
+  client_secret: cf2-api-client-secret
+foundations:
+  source:
+    password: fake-password
+    url: https://opsman.source.example.com
+    client_id: fake-client-id
+    client_secret: fake-client-secret
+    username: fake-user
+    ip: 1.1.1.1
+    hostname: opsman1.example.com
+    private_key: /path/to/om1_rsa_key
+    ssh_user: "ubuntu"
+  target:
+    password: fake-password
+    url: https://opsman.target.example.com
+    client_id: fake-client-id
+    client_secret: fake-client-secret
+    username: fake-user
+    ip: 1.1.1.2
+    hostname: opsman2.example.com
+    private_key: /path/to/om2_rsa_key
+    ssh_user: "ubuntu"
+migration:

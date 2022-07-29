@@ -1,0 +1,39 @@
+debug: true
+exclude_orgs:
+  - system
+  - p-spring-cloud-services
+domains_to_replace:
+  apps.tas-1.vmware.com: apps.tas-2.vmware.com
+foundations:
+  source:
+    url: https://opsman1.vmware.com
+    client_id:
+    client_secret:
+    username: admin
+    password: opsman1-admin-password
+    hostname: opsman1.vmware.com
+    private_key:  /path/to/om_rsa_key
+    ssh_user: "ubuntu"
+  target:
+    url: https://opsman2.vmware.com
+    client_id:
+    client_secret:
+    username: admin
+    password: opsman1-admin-password
+    hostname: opsman2.vmware.com
+    private_key: /path/to/om_rsa_key
+    ssh_user: "ubuntu"
+migration:
+  use_default_migrator: true
+  migrators:
+  - name: sqlserver
+  - name: ecs
+  - name: mysql
+    migrator:
+      backup_type: scp
+      scp:
+        username: mysql
+        hostname: mysql-backup.vmware.com
+        port: 22
+        destination_directory: /var/vcap/data/mysql/backups
+        private_key: /path/to/om_rsa_key
