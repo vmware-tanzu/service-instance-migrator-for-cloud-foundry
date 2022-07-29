@@ -36,5 +36,5 @@ func TestImportOrgCommand(t *testing.T) {
 		log.Fatalf("could not get current working dir, %s", err)
 	}
 
-	test.RunMigratorCommand(t, "import", "org", test.OrgName, "--import-dir", path.Join(cwd, "export-org-tests"), "--debug")
+	test.RunMigratorCommand(t, "import", "org", test.ImportOrgName, "--import-dir", path.Join(cwd, "export-org-tests"), "--debug")
 }

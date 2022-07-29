@@ -38,7 +38,7 @@ func TestImportCommand_ExcludeOrgs(t *testing.T) {
 		log.Fatalf("could not get current working dir, %s", err)
 	}
 
-	test.RunMigratorCommand(t, "import", "--import-dir", path.Join(cwd, fmt.Sprintf("export-all-but-%s-tests", test.OrgName)), "--exclude-orgs", strings.Join([]string{"^system$", "^broker$", "p-*"}, ","), "--debug")
+	test.RunMigratorCommand(t, "import", "--import-dir", path.Join(cwd, fmt.Sprintf("export-all-but-%s-tests", test.ImportOrgName)), "--exclude-orgs", strings.Join([]string{"^system$", "^broker$", "p-*"}, ","), "--debug")
 }
 
 func TestImportCommand_IncludeOrgs(t *testing.T) {
@@ -50,5 +50,5 @@ func TestImportCommand_IncludeOrgs(t *testing.T) {
 		log.Fatalf("could not get current working dir, %s", err)
 	}
 
-	test.RunMigratorCommand(t, "import", "--import-dir", path.Join(cwd, fmt.Sprintf("export-%s-tests", test.OrgName)), "--include-orgs", test.OrgName, "--debug")
+	test.RunMigratorCommand(t, "import", "--import-dir", path.Join(cwd, fmt.Sprintf("export-%s-tests", test.ImportOrgName)), "--include-orgs", test.ImportOrgName, "--debug")
 }

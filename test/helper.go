@@ -47,7 +47,8 @@ import (
 
 const (
 	packagePath = "github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/cmd/si-migrator"
-	OrgName     = "si-migrator-test-org"
+	ExportOrgName     = "tas1-test-org"
+	ImportOrgName     = "tas2-test-org"
 	SpaceName   = "si-migrator-test-space"
 )
 
@@ -83,13 +84,13 @@ func InitLogger(level string) {
 func SetupExportCommand(t *testing.T) cf.Client {
 	client := NewCFClient(t, true)
 
-	DeleteServices(t, client, OrgName, SpaceName)
-	DeleteOrg(t, client, OrgName)
-	org := CreateOrg(t, client, OrgName)
+	DeleteServices(t, client, ExportOrgName, SpaceName)
+	DeleteOrg(t, client, ExportOrgName)
+	org := CreateOrg(t, client, ExportOrgName)
 	space := CreateSpace(t, client, SpaceName, org.Guid)
 
 	CreateCredhubService(t, client, space.Guid)
-	CreateSQLServerService(t, client, space.Guid)
+	//CreateSQLServerService(t, client, space.Guid)
 	CreateMySQLService(t, client, space.Guid)
 
 	return client
@@ -98,9 +99,9 @@ func SetupExportCommand(t *testing.T) cf.Client {
 func SetupImportCommand(t *testing.T) cf.Client {
 	client := NewCFClient(t, false)
 
-	DeleteServices(t, client, OrgName, SpaceName)
-	DeleteOrg(t, client, OrgName)
-	org := CreateOrg(t, client, OrgName)
+	DeleteServices(t, client, ImportOrgName, SpaceName)
+	DeleteOrg(t, client, ImportOrgName)
+	org := CreateOrg(t, client, ImportOrgName)
 	CreateSpace(t, client, SpaceName, org.Guid)
 
 	return client

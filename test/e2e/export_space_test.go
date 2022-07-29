@@ -39,5 +39,5 @@ func exportOrgSpace(t *testing.T) {
 		log.Fatalf("could not get current working dir, %s", err)
 	}
 
-	test.RunMigratorCommand(t, "export", "space", test.SpaceName, "--org", test.OrgName, "--export-dir", path.Join(cwd, "export-space-tests"), "--debug", "-n")
+	test.RunMigratorCommand(t, "export", "space", test.SpaceName, "--org", test.ExportOrgName, "--export-dir", path.Join(cwd, "export-space-tests"), "--debug", "-n")
 }

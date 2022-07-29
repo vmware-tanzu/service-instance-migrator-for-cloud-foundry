@@ -5,6 +5,9 @@
 # run artifacts
 /si-migrator.yml
 /test/e2e/si-migrator.yml
+/export
+/test/e2e/export-org-tests
+/test/e2e/export-space-tests
 
 # Binaries for programs and plugins
 *.exe
