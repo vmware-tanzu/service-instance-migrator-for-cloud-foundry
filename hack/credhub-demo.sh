@@ -9,6 +9,8 @@ if [[ -f "$ROOT_DIR/demo-helpers.sh" ]]; then
   source "$ROOT_DIR/demo-helpers.sh" || die "Could not find $ROOT_DIR/demo-helpers.sh"
 fi
 
+BIN_DIR="$ROOT_DIR/../bin"
+
 function usage() {
     echo "Usage:"
     echo "  $0 [command] [flags]"
@@ -70,9 +72,9 @@ function setup() {
 }
 
 function install_bin() {
-  if ! command -v service-instance-migrator &> /dev/null; then
-    echo "service-instance-migrator could not be found"
-    return 1
+  if ! command -v "$BIN_DIR"/service-instance-migrator &> /dev/null; then
+    2>&1 echo "service-instance-migrator could not be found."
+    exit 1
 fi
 }
 
@@ -80,7 +82,7 @@ function run() {
   install_bin
   export_dir=$(mktemp -d)
   echo "Exporting credhub to: $export_dir"
-  service-instance-migrator export space "$CF_SOURCE_SPACE" -o "$CF_SOURCE_ORG" --export-dir="$export_dir" --services="credhub" || die "failed to run service-instance-migrator export space $CF_SOURCE_SPACE -o $CF_SOURCE_ORG --export-dir=$export_dir"
+  "$BIN_DIR"/service-instance-migrator export space "$CF_SOURCE_SPACE" -o "$CF_SOURCE_ORG" --export-dir="$export_dir" --services="credhub" || die "failed to run service-instance-migrator export space $CF_SOURCE_SPACE -o $CF_SOURCE_ORG --export-dir=$export_dir"
 
   login_tas2 || die "failed to run login to target foundation"
 
@@ -88,7 +90,7 @@ function run() {
     mv "$export_dir/$CF_SOURCE_ORG" "$export_dir/$CF_TARGET_ORG"
   fi
 
-  service-instance-migrator import space "$CF_TARGET_SPACE" -o "$CF_TARGET_ORG" --import-dir="$export_dir" --services="credhub" || die "failed to run service-instance-migrator import space $CF_TARGET_SPACE -o $CF_TARGET_ORG --import-dir=$export_dir"
+  "$BIN_DIR"/service-instance-migrator import space "$CF_TARGET_SPACE" -o "$CF_TARGET_ORG" --import-dir="$export_dir" --services="credhub" || die "failed to run service-instance-migrator import space $CF_TARGET_SPACE -o $CF_TARGET_ORG --import-dir=$export_dir"
 
   clone_build_push "https://github.com/malston/secure-credentials-demo.git" "credhub-migration" "secure-credentials-demo" "$CF_TARGET_SYS_DOMAIN" "$CF_TARGET_ORG" "$CF_TARGET_SPACE"
 

@@ -360,24 +360,11 @@ function delete_and_create_service() {
   local config_params="${5}"
   local non_interactive="${6}"
   if check_app_exists "$app"; then
-    if [ "$non_interactive" = true ] ; then
-        delete_app "$app"
-    else
-      if prompt "Do you want to delete ${app}?"; then
-        delete_app "$app"
-      fi
-    fi
+    delete_app "$app"
   fi
   if check_service_exists "$service_instance"; then
-    if [ "$non_interactive" = true ] ; then
-      cf delete-service "$service_instance" -f
-      wait_for_ready "$service_instance" "d" || die "failed to delete $service_instance"
-    else
-      if prompt "$service_instance already exists. do you want to delete it?"; then
-        cf delete-service "$service_instance" -f
-        wait_for_ready "$service_instance" "d" || die "failed to delete $service_instance"
-      fi
-    fi
+    cf delete-service "$service_instance" -f
+    wait_for_ready "$service_instance" "d" || die "failed to delete $service_instance"
   fi
   if ! check_service_exists "$service_instance"; then
     if [[ -n "$config_params" ]]; then
