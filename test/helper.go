@@ -87,6 +87,7 @@ func SetupExportCommand(t *testing.T) cf.Client {
 	DeleteOrg(t, client, OrgName)
 	org := CreateOrg(t, client, OrgName)
 	space := CreateSpace(t, client, SpaceName, org.Guid)
+
 	CreateCredhubService(t, client, space.Guid)
 	CreateSQLServerService(t, client, space.Guid)
 	CreateMySQLService(t, client, space.Guid)

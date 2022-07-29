@@ -4,6 +4,7 @@
 
 # run artifacts
 /si-migrator.yml
+/test/e2e/si-migrator.yml
 
 # Binaries for programs and plugins
 *.exe

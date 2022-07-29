@@ -72,7 +72,8 @@ More to come in the future:
 
 The `service-instance-migrator` requires user credentials or client credentials to communicate with the Cloud Foundry Cloud Controller API.
 
-Create a `$HOME/.config/si-migrator/si-migrator.yml` using the following template:
+Create a `$HOME/.config/si-migrator/si-migrator.yml` using the following template. You can leave out any migrators that
+do not apply to your CF deployments.
 
 ```yaml
 export_dir: "/tmp/tas-export"
@@ -204,15 +205,17 @@ The locations of this file can be overridden using environment variables:
 - `SI_MIGRATOR_CONFIG_FILE` will override cli config file location [default: `$HOME/si-migrator.yml`]
 - `SI_MIGRATOR_CONFIG_HOME` will override cli config directory location [default: `.`, `$HOME`, or `$HOME/.config`]
 
-The `source_api` and `target_api` and configuration under the `sqlserver` and `ecs` migrators will be looked up from Ops Manager,
-so it's not required to set them. Command line flags always override any values found in the config file. Make sure to update the directories and domains as needed.
+The `source_api` and `target_api` as well as `source_bosh` and `target_bosh` stanzas will be looked up from Ops Manager,
+so it's not required to set them. Command line flags will always override any values found in the config file.
 
-We will retrieve the encryption key and credentials for the cloud-controller database for the `ecs` and `sqlserver` migrations if
-you do not specify these values, however, it does add extra time to the migration to retrieve them.
+The `service-instance-migrator` retrieves the encryption key and credentials for the `cloud-controller` database used by 
+the `ecs` and `sqlserver` migrations if you do not specify these values. It does, however, add some extra time to the 
+migration to retrieve them.
 
 ### Export
 
-Running `export` without any flags will export all service instances of all supported types from the source foundation. This may take a long time depending on how many service instances you have in your source foundation.
+Running `export` without any flags will export all service instances of all supported types from the source foundation. 
+This may take a long time depending on how many service instances you have in your source foundation.
 
 ```shell
 service-instance-migrator export
@@ -220,7 +223,8 @@ service-instance-migrator export
 
 ### Import
 
-Running `import` does the opposite of `export` and as you may have guessed, uses the output from export as it's input. This command will take all the service instances found in the export directory and attempt to import them into the target foundation.
+Running `import` does the opposite of `export` and as you may have guessed, uses the output from export as it's input. 
+This command will take all the service instances found in the export directory and attempt to import them into the target foundation.
 
 ```shell
 service-instance-migrator import
@@ -235,7 +239,7 @@ By default, all log output is appended to `/tmp/si-migrator.log`. You can overri
 
 ## For Developers
 
-This project uses Go 1.16+ and Go modules. Clone the repo to any directory.
+This project uses Go 1.17+ and Go modules. Clone the repo to any directory.
 
 Build and run all checks
 
@@ -262,6 +266,68 @@ make release
 ```
 
 Run `make help` for all other tasks.
+
+### Integration Tests
+
+The integration tests target just one foundation. Two orgs are created to simulate the effect of having multiple 
+foundations in order to save costs.
+
+### Run the end-to-end test suite
+
+The e2e tests can be executed to test the following migrators:
+
+- [credhub](https://network.pivotal.io/products/credhub-service-broker/)
+- [sqlserver](https://github.com/cloudfoundry-attic/mssql-server-broker/)
+- [mysql](https://network.pivotal.io/products/pivotal-mysql/)
+- [ecs](https://network.pivotal.io/products/ecs-service-broker/)
+
+Create a `si-migrator.yml` file under [test/e2e][test/e2e/si-migrator.yml.example] directory. You can use our example for
+reference or the complete reference documentation [above](#documentation).
+
+Run the tests
+
+```shell
+make test-e2e
+```
+
+### Run the demos
+
+To run the demos under [hack](hack), you need to set some environment variables. We suggest first installing 
+[direnv](https://direnv.net/) and creating a `.envrc` file under the root of the project.
+Here's an example `.envrc` which exports the required environment variables:
+
+```shell
+export CF_TAS1=$HOME/.cf_tas1
+export CF_TAS2=$HOME/.cf_tas2
+
+export CF_SOURCE_HOME="$CF_TAS1"
+export CF_TARGET_HOME="$CF_TAS2"
+export CF_HOME="$CF_TAS1"
+
+export CF_SOURCE_SYS_DOMAIN="sys.tas1.vmware.com"
+export CF_SOURCE_APPS_DOMAIN="apps.tas1.vmware.com"
+export CF_SOURCE_USERNAME="admin"
+export CF_SOURCE_PASSWORD="your-cf-admin-password"
+export CF_SOURCE_ORG=tas1
+export CF_SOURCE_SPACE=si-migrator-test-space
+
+export CF_TARGET_SYS_DOMAIN="sys.tas1.vmware.com"
+export CF_TARGET_APPS_DOMAIN="apps.tas1.vmware.com"
+export CF_TARGET_USERNAME="admin"
+export CF_TARGET_PASSWORD="your-cf-admin-password"
+export CF_TARGET_ORG=tas2
+export CF_TARGET_SPACE=si-migrator-test-space
+
+export OM_CLIENT_ID=""
+export OM_CLIENT_SECRET=""
+export OM_USERNAME="admin"
+export OM_PASSWORD="your-admin-opsman-password"
+export OM_SKIP_SSL_VALIDATION=true
+export OM_TARGET="opsman.tas1.vmware.com"
+```
+
+Install the [credhub service broker](https://network.pivotal.io/products/credhub-service-broker/). Then, run 
+`./hack/credhub-demo.sh` to demo migrating a credhub service instance.
 
 ## Contributing
 
