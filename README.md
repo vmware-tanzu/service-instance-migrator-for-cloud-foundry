@@ -267,7 +267,7 @@ make release
 
 Run `make help` for all other tasks.
 
-### Integration Tests
+## Integration Tests
 
 The integration tests target just one foundation. Two orgs are created to simulate the effect of having multiple 
 foundations in order to save costs.
