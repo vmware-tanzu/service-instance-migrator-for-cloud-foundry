@@ -22,7 +22,7 @@ service-instance-migrator import org sample-org
 
 ```
       --debug                               Enable debug logging
-      --domains-to-replace stringToString   Domains to replace in any found application routes (default [apps.h2o-37-252.h2o.vmware.com=apps.h2o-37-252.h2o.vmware.com])
+      --domains-to-replace stringToString   Domains to replace in any found application routes (default [apps.tas1.vmware.com=apps.tas2.vmware.com])
       --dry-run                             Display command without executing
       --ignore-service-keys                 Don't create any service keys on import
       --import-dir string                   Directory where service instances will be placed or read (default "export")

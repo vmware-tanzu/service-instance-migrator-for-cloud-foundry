@@ -20,7 +20,7 @@ service-instance-migrator import --include-orgs='org1,org2' --import-dir=/tmp
 ### Options
 
 ```
-      --domains-to-replace stringToString   Domains to replace in any found application routes (default [apps.h2o-37-252.h2o.vmware.com=apps.h2o-37-252.h2o.vmware.com])
+      --domains-to-replace stringToString   Domains to replace in any found application routes (default [apps.tas1.vmware.com=apps.tas2.vmware.com])
       --exclude-orgs strings                Any orgs matching the regex(es) specified will be excluded (default [system,p-spring-cloud-services])
   -h, --help                                help for import
       --ignore-service-keys                 Don't create any service keys on import
