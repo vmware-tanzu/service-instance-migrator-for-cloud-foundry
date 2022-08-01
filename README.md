@@ -1,4 +1,4 @@
-# service-instance-migrator-for-cloud-foundry
+# Service Instance Migrator for Cloud Foundry
 
 [![build workflow](https://github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/actions/workflows/build.yml)
 
@@ -6,18 +6,7 @@
 
 The `service-instance-migrator` is a command-line tool for migrating [Service Instances](https://docs.cloudfoundry.org/devguide/services/) from one [Cloud Foundry](https://docs.cloudfoundry.org/) (CF) or [Tanzu Application Service](https://tanzu.vmware.com/application-service) (TAS) to another. The `service-instance-migrator` currently only supports TAS deployments because it relies on the Ops Manager API to execute some of its underlying commands. However, this dependency is mostly to ease the burden on providing all the configuration necessary for running a migration. And it's a near-term goal to remove Ops Manager as a required dependency.
 
-## Prerequisites
-
-The `service-instance-migrator` relies on the following tools to execute in a shell during the migration process. Please
-ensure these are installed prior to running any `export` or `import` commands.
-
-- [om](https://github.com/pivotal-cf/om)
-- [bosh-cli](https://bosh.io/docs/cli-v2)
-- [cf-cli](https://code.cloudfoundry.org/cli)
-- [credhub-cli](https://github.com/cloudfoundry-incubator/credhub-cli)
-- [jq](https://stedolan.github.io/jq)
-
-## Supported Service Instance Types
+### Supported Service Instance Types
 
 The following service types are currently implemented:
 
@@ -38,7 +27,7 @@ More to come in the future:
 - SMB
 - AppD
 
-## CC API Object to Migration Process Mapping
+### CC API Object to Migration Process Mapping
 
 - Applications                      - App-Migrator
 - Application Environment Variables - App-Migrator
@@ -67,6 +56,23 @@ More to come in the future:
 - Local UAA Users/Clients           - Other
 - LDAP Users                        - CF-Mgmt
 - Roles                             - CF-Mgmt
+
+## Getting Started
+
+### Prerequisites
+
+The `service-instance-migrator` relies on the following tools to execute in a shell during the migration process. Please
+ensure these are installed prior to running any `export` or `import` commands.
+
+- [om](https://github.com/pivotal-cf/om)
+- [bosh-cli](https://bosh.io/docs/cli-v2)
+- [cf-cli](https://code.cloudfoundry.org/cli)
+- [credhub-cli](https://github.com/cloudfoundry-incubator/credhub-cli)
+- [jq](https://stedolan.github.io/jq)
+
+### Build from source
+
+See the [development guide](./DEVELOPMENT.md) for instructions to build from source.
 
 ## Documentation
 
@@ -240,36 +246,6 @@ Check out the [docs](./docs/si-migrator.md) to see usage for all the commands.
 
 By default, all log output is appended to `/tmp/si-migrator.log`. You can override this location by setting the
 `SI_MIGRATOR_LOG_FILE` environment variable.
-
-## For Developers
-
-This project uses Go 1.17+ and Go modules. Clone the repo to any directory.
-
-Build and run all checks
-
-```shell
-make all
-```
-
-Build the project
-
-```shell
-make install
-```
-
-Run the tests
-
-```shell
-make test
-```
-
-To create a release for `darwin`, `linux` and `windows`.
-
-```shell
-make release
-```
-
-Run `make help` for all other tasks.
 
 ## Integration Tests
 
