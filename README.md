@@ -27,36 +27,6 @@ More to come in the future:
 - SMB
 - AppD
 
-### CC API Object to Migration Process Mapping
-
-- Applications                      - App-Migrator
-- Application Environment Variables - App-Migrator
-- Buildpacks                        - Other
-- Default Security Groups           - Other
-- Feature Flags                     - Other
-- Private Domains                   - CF-Mgmt
-- Shared Domains                    - CF-Mgmt
-- Routes                            - App-Migrator
-- Route Mappings                    - App-Migrator
-- Quota Definitions                 - CF-Mgmt
-- Application Security Groups       - CF-Mgmt
-- Services                          - Other
-- Service Brokers                   - Other
-- Service Plans                     - CF-Mgmt
-- Service Plan Visibility           - CF-Mgmt
-- Service Keys                      - Other
-- Managed Service Instances         - Service-Instance-Migrator
-- User Provided Services            - Service-Instance-Migrator
-- Service Bindings                  - App-Migrator
-- Orgs                              - CF-Mgmt
-- Spaces                            - CF-Mgmt
-- Space Quotas                      - CF-Mgmt
-- Isolation Segments                - CF-Mgmt
-- Stacks                            - Other
-- Local UAA Users/Clients           - Other
-- LDAP Users                        - CF-Mgmt
-- Roles                             - CF-Mgmt
-
 ## Getting Started
 
 ### Prerequisites
@@ -69,6 +39,30 @@ ensure these are installed prior to running any `export` or `import` commands.
 - [cf-cli](https://code.cloudfoundry.org/cli)
 - [credhub-cli](https://github.com/cloudfoundry-incubator/credhub-cli)
 - [jq](https://stedolan.github.io/jq)
+
+### Download latest release
+
+Download the `service-instance-migrator-<OS>-amd64.tar.gz` from the most recent release listed on the [Service Instance Migrator for Cloud Foundry releases](https://github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/releases) page.
+
+Following are the instructions for installing version `v0.0.8`.
+
+#### For macOS
+
+```shell
+VERSION=v0.0.8
+wget -q https://github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/releases/download/${VERSION}/service-instance-migrator-darwin-amd64.tgz
+tar -xvf service-instance-migrator-darwin-amd64.tgz -C /usr/local/bin
+chmod +x /usr/local/bin/service-instance-migrator
+```
+
+#### For linux
+
+```shell
+VERSION=v0.0.8
+wget -q https://github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/releases/download/${VERSION}/service-instance-migrator-linux-amd64.tgz
+tar -xvf service-instance-migrator-darwin-amd64.tgz -C /usr/local/bin
+chmod +x /usr/local/bin/service-instance-migrator
+```
 
 ### Build from source
 
