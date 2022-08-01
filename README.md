@@ -214,7 +214,9 @@ The `service-instance-migrator` retrieves the encryption key and credentials for
 the `ecs` and `sqlserver` migrations if you do not specify these values. It does, however, add some extra time to the
 migration to retrieve them.
 
-### Export
+### Commands
+
+#### Export
 
 Running `export` without any flags will export all service instances of all supported types from the source foundation.
 This may take a long time depending on how many service instances you have in your source foundation.
@@ -223,7 +225,7 @@ This may take a long time depending on how many service instances you have in yo
 service-instance-migrator export
 ```
 
-### Import
+#### Import
 
 Running `import` does the opposite of `export` and as you may have guessed, uses the output from export as it's input.
 This command will take all the service instances found in the export directory and attempt to import them into the target foundation.
