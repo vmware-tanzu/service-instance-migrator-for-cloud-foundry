@@ -275,7 +275,7 @@ Install the [credhub service broker](https://network.pivotal.io/products/credhub
 
 ## Contributing
 
-The service-instance-migrator-for-cloud-foundry project team welcomes contributions from the community. Before you start working with service-instance-migrator-for-cloud-foundry, please
+The Service Instance Migrator for Cloud Foundry project team welcomes contributions from the community. Before you start working with Service Instance Migrator for Cloud Foundry, please
 read our [Developer Certificate of Origin](https://cla.vmware.com/dco). All contributions to this repository must be
 signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on
 as an open-source patch. For more detailed information, refer to [CONTRIBUTING.md](CONTRIBUTING.md).
