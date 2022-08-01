@@ -1,32 +1,36 @@
 # Development
 
-This doc explains how to set up a development environment in order to start
+This directory contains documentation for Developers in order to start
 [contributing](CONTRIBUTING.md) to the Service Instance Migrator for Cloud Foundry.
 
 This project uses Go 1.17+ and Go modules. Clone the repo to any directory.
 
-Build and run all checks
+## Build and run all checks
+
+Before submitting any PRs to upstream, make sure to run:
 
 ```shell
 make all
 ```
 
-Build the project
+## Build the project
+
+To build into the local ./bin dir:
 
 ```shell
-make install
+make build
 ```
 
-Run the tests
+## Run the unit tests
 
 ```shell
 make test
 ```
 
-To create a release for `darwin`, `linux` and `windows`.
+## Run the integration tests
 
 ```shell
-make release
+make test-e2e
 ```
 
 Run `make help` for all other tasks.
