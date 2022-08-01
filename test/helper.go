@@ -55,59 +55,48 @@ const (
 var ServiceInstanceMigratorPath string
 
 func Setup(t *testing.T) {
-	InitLogger(log.InfoLevel.String())
+	initLogger(log.InfoLevel.String())
 	ServiceInstanceMigratorPath = buildSIMigrator(t)
 }
 
-func InitLogger(level string) {
-	// Output to stdout instead of the default stderr
-	log.SetOutput(os.Stdout)
-	log.SetFormatter(&log.TextFormatter{
-		ForceColors: true,
-	})
-
-	if level == "" {
-		var ok bool
-		level, ok = os.LookupEnv("LOG_LEVEL")
-		if !ok {
-			level = log.InfoLevel.String()
-		}
-	}
-
-	l, err := log.ParseLevel(level)
-	if err != nil {
-		l = log.InfoLevel
-	}
-	log.SetLevel(l)
-}
-
 func SetupExportCommand(t *testing.T) cf.Client {
-	client := NewCFClient(t, true)
+	client := newCFClient(t, true)
 
-	DeleteServices(t, client, ExportOrgName, SpaceName)
-	DeleteOrg(t, client, ExportOrgName)
-	org := CreateOrg(t, client, ExportOrgName)
-	space := CreateSpace(t, client, SpaceName, org.Guid)
+	deleteServices(t, client, ExportOrgName, SpaceName)
+	deleteOrg(t, client, ExportOrgName)
+	org := createOrg(t, client, ExportOrgName)
+	space := createSpace(t, client, SpaceName, org.Guid)
 
-	CreateCredhubService(t, client, space.Guid)
-	//CreateSQLServerService(t, client, space.Guid)
-	CreateMySQLService(t, client, space.Guid)
+	createUserProvidedServiceInstance(t, client, space.Guid)
+	createCredhubService(t, client, space.Guid)
+	//createSQLServerService(t, client, space.Guid)
+	createMySQLService(t, client, space.Guid)
 
 	return client
 }
 
 func SetupImportCommand(t *testing.T) cf.Client {
-	client := NewCFClient(t, false)
+	client := newCFClient(t, false)
 
-	DeleteServices(t, client, ImportOrgName, SpaceName)
-	DeleteOrg(t, client, ImportOrgName)
-	org := CreateOrg(t, client, ImportOrgName)
-	CreateSpace(t, client, SpaceName, org.Guid)
+	deleteServices(t, client, ImportOrgName, SpaceName)
+	deleteOrg(t, client, ImportOrgName)
+	org := createOrg(t, client, ImportOrgName)
+	createSpace(t, client, SpaceName, org.Guid)
 
 	return client
 }
 
-func NewCFClient(t *testing.T, toSource bool) cf.Client {
+func RunMigratorCommand(t *testing.T, args ...string) {
+	t.Helper()
+	cmd := exec.Command(ServiceInstanceMigratorPath, args...)
+	stdOutErr, err := cmd.CombinedOutput()
+	if exitErr, ok := err.(*exec.ExitError); ok {
+		assert.Equal(t, "0", exitErr.Error())
+	}
+	t.Log(string(stdOutErr))
+}
+
+func newCFClient(t *testing.T, toSource bool) cf.Client {
 	cwd, err := os.Getwd()
 	if err != nil {
 		log.Fatalf("could not get current working dir, %s", err)
@@ -155,56 +144,7 @@ func NewCFClient(t *testing.T, toSource bool) cf.Client {
 	return client
 }
 
-func DeleteOrg(t *testing.T, client cf.Client, orgName string) {
-	org, err := client.GetOrgByName(orgName)
-	if err != nil {
-		if cfclient.IsOrganizationNotFoundError(err) {
-			log.Infof("Not deleting org, org %s not found", orgName)
-			return
-		}
-		require.NoError(t, err, "error getting org %s by name", orgName)
-	}
-	err = client.DeleteOrg(org.Guid, true, false)
-	log.Infof("Deleted org %s", orgName)
-	require.NoError(t, err, "error deleting org %s", orgName)
-}
-
-func CreateOrg(t *testing.T, client cf.Client, orgName string) cfclient.Org {
-	log.Infof("Creating org %s", orgName)
-	org, err := client.CreateOrg(cfclient.OrgRequest{Name: orgName})
-	if err != nil {
-		if !cfclient.IsOrganizationNameTakenError(err) {
-			require.NoErrorf(t, err, "error creating org %s", orgName)
-		}
-		org, err = client.GetOrgByName(orgName)
-		require.NoError(t, err, "error getting org %s by name", orgName)
-		log.Infof("Not creating org, org %s already exists", orgName)
-		return org
-	}
-	log.Infof("Created org %s, orgGuid: %s", orgName, org.Guid)
-	return org
-}
-
-func CreateSpace(t *testing.T, client cf.Client, spaceName string, orgGuid string) cfclient.Space {
-	log.Infof("Creating space %s, orgGuid: %s", spaceName, orgGuid)
-	space, err := client.CreateSpace(cfclient.SpaceRequest{
-		Name:             spaceName,
-		OrganizationGuid: orgGuid,
-	})
-	if err != nil {
-		if !cfclient.IsSpaceNameTakenError(err) {
-			require.NoErrorf(t, err, "error creating space %s", spaceName)
-		}
-		space, err = client.GetSpaceByName(spaceName, orgGuid)
-		require.NoError(t, err, "error getting space %s by name", spaceName)
-		log.Infof("Not creating space, space %s already exists", spaceName)
-		return space
-	}
-	log.Infof("Created space %s", spaceName)
-	return space
-}
-
-func DeleteServices(t *testing.T, client cf.Client, orgName string, spaceName string) {
+func deleteServices(t *testing.T, client cf.Client, orgName string, spaceName string) {
 	org, err := client.GetOrgByName(orgName)
 	if err != nil {
 		if cfclient.IsOrganizationNotFoundError(err) {
@@ -236,52 +176,103 @@ func DeleteServices(t *testing.T, client cf.Client, orgName string, spaceName st
 		err = client.DeleteServiceInstance(si.Guid, false, true)
 		require.NoError(t, err, "error deleting service instance %s", si.Name)
 		log.Infoln("Waiting for service instance to delete")
-		err = WaitForReady(10 * time.Minute, client, si.Guid, "delete")
+		err = waitForReady(10 * time.Minute, client, si.Guid, "delete")
 		require.NoError(t, err, "error deleting service instance %s", si.Name)
 		log.Infof("Service instance %s is deleted", si.Name)
 	}
 }
 
-
-func RunMigratorCommand(t *testing.T, args ...string) {
-	t.Helper()
-	cmd := exec.Command(ServiceInstanceMigratorPath, args...)
-	stdOutErr, err := cmd.CombinedOutput()
-	if exitErr, ok := err.(*exec.ExitError); ok {
-		assert.Equal(t, "0", exitErr.Error())
+func deleteOrg(t *testing.T, client cf.Client, orgName string) {
+	org, err := client.GetOrgByName(orgName)
+	if err != nil {
+		if cfclient.IsOrganizationNotFoundError(err) {
+			log.Infof("Not deleting org, org %s not found", orgName)
+			return
+		}
+		require.NoError(t, err, "error getting org %s by name", orgName)
 	}
-	t.Log(string(stdOutErr))
+	err = client.DeleteOrg(org.Guid, true, false)
+	log.Infof("Deleted org %s", orgName)
+	require.NoError(t, err, "error deleting org %s", orgName)
 }
 
-func CreateCredhubService(t *testing.T, client cf.Client, spaceGuid string) {
+func createOrg(t *testing.T, client cf.Client, orgName string) cfclient.Org {
+	log.Infof("Creating org %s", orgName)
+	org, err := client.CreateOrg(cfclient.OrgRequest{Name: orgName})
+	if err != nil {
+		if !cfclient.IsOrganizationNameTakenError(err) {
+			require.NoErrorf(t, err, "error creating org %s", orgName)
+		}
+		org, err = client.GetOrgByName(orgName)
+		require.NoError(t, err, "error getting org %s by name", orgName)
+		log.Infof("Not creating org, org %s already exists", orgName)
+		return org
+	}
+	log.Infof("Created org %s, orgGuid: %s", orgName, org.Guid)
+	return org
+}
+
+func createSpace(t *testing.T, client cf.Client, spaceName string, orgGuid string) cfclient.Space {
+	log.Infof("Creating space %s, orgGuid: %s", spaceName, orgGuid)
+	space, err := client.CreateSpace(cfclient.SpaceRequest{
+		Name:             spaceName,
+		OrganizationGuid: orgGuid,
+	})
+	if err != nil {
+		if !cfclient.IsSpaceNameTakenError(err) {
+			require.NoErrorf(t, err, "error creating space %s", spaceName)
+		}
+		space, err = client.GetSpaceByName(spaceName, orgGuid)
+		require.NoError(t, err, "error getting space %s by name", spaceName)
+		log.Infof("Not creating space, space %s already exists", spaceName)
+		return space
+	}
+	log.Infof("Created space %s", spaceName)
+	return space
+}
+
+func createUserProvidedServiceInstance(t *testing.T, client cf.Client, spaceGuid string) {
+	_, err := client.CreateUserProvidedServiceInstance(cfclient.UserProvidedServiceInstanceRequest{
+		Name:      "si-migrator-ups",
+		Credentials: map[string]interface{}{
+			"username": "admin",
+			"password": "secret",
+		},
+		SpaceGuid: spaceGuid,
+		Tags: []string{"tag1", "tag2"},
+	})
+	require.NoError(t, err, "error creating user provided service instance")
+}
+
+func createCredhubService(t *testing.T, client cf.Client, spaceGuid string) {
 	space, err := client.GetSpaceByGuid(spaceGuid)
 	require.NoError(t, err, "error getting space by guid %s", spaceGuid)
 	serviceCredentials := map[string]interface{}{"username": "admin", "password": "password1234"}
-	si := CreateManagedServiceInstance(t, client, space, "database1", "credhub-broker", "default", serviceCredentials)
-	err = WaitForReady(10 * time.Minute, client, si.Guid, "create")
+	si := createManagedServiceInstance(t, client, space, "database1", "credhub-broker", "default", serviceCredentials)
+	err = waitForReady(10 * time.Minute, client, si.Guid, "create")
 	require.NoError(t, err, "error creating %s service instance %s", "credhub", si.Name)
-	CreateApp(t, client, space, "secure-credentials-demo", si)
+	createApp(t, client, space, "secure-credentials-demo", si)
 }
 
-func CreateMySQLService(t *testing.T, client cf.Client, spaceGuid string)  {
+func createMySQLService(t *testing.T, client cf.Client, spaceGuid string)  {
 	space, err := client.GetSpaceByGuid(spaceGuid)
 	require.NoError(t, err, "error getting space by guid %s", spaceGuid)
-	si := CreateManagedServiceInstance(t, client, space, "mysqldb", "dedicated-mysql-broker", "db-small", nil)
-	err = WaitForReady(10 * time.Minute, client, si.Guid, "create")
+	si := createManagedServiceInstance(t, client, space, "mysqldb", "dedicated-mysql-broker", "db-small", nil)
+	err = waitForReady(10 * time.Minute, client, si.Guid, "create")
 	require.NoError(t, err, "error creating %s service instance %s", "p.mysql", si.Name)
-	CreateApp(t, client, space, "spring-music", si)
+	createApp(t, client, space, "spring-music", si)
 }
 
-func CreateSQLServerService(t *testing.T, client cf.Client, spaceGuid string) {
+func createSQLServerService(t *testing.T, client cf.Client, spaceGuid string) {
 	space, err := client.GetSpaceByGuid(spaceGuid)
 	require.NoError(t, err, "error getting space by guid %s", spaceGuid)
-	si := CreateManagedServiceInstance(t, client, space, "sql-test", "SQLServer", "sharedVM", nil)
-	err = WaitForReady(10 * time.Minute, client, si.Guid, "create")
+	si := createManagedServiceInstance(t, client, space, "sql-test", "SQLServer", "sharedVM", nil)
+	err = waitForReady(10 * time.Minute, client, si.Guid, "create")
 	require.NoError(t, err, "error creating %s service instance %s", "SQLServer", si.Name)
-	CreateApp(t, client, space, "client-example", si)
+	createApp(t, client, space, "client-example", si)
 }
 
-func CreateManagedServiceInstance(t *testing.T, client cf.Client, space cfclient.Space, name, brokerName, planName string, params map[string]interface{}) cfclient.ServiceInstance {
+func createManagedServiceInstance(t *testing.T, client cf.Client, space cfclient.Space, name, brokerName, planName string, params map[string]interface{}) cfclient.ServiceInstance {
 	var broker cfclient.ServiceBroker
 	brokers, err := client.ListServiceBrokers()
 	require.NoError(t, err, "error listing service brokers")
@@ -322,7 +313,7 @@ func CreateManagedServiceInstance(t *testing.T, client cf.Client, space cfclient
 	return s
 }
 
-func CreateApp(t *testing.T, client cf.Client, space cfclient.Space, appName string, si cfclient.ServiceInstance) *cfclient.ServiceBinding {
+func createApp(t *testing.T, client cf.Client, space cfclient.Space, appName string, si cfclient.ServiceInstance) *cfclient.ServiceBinding {
 	app, err := client.CreateApp(cfclient.AppCreateRequest{
 		Name:      appName,
 		SpaceGuid: space.Guid,
@@ -336,7 +327,7 @@ func CreateApp(t *testing.T, client cf.Client, space cfclient.Space, appName str
 	return binding
 }
 
-func WaitForReady(timeout time.Duration, client cf.Client, serviceInstanceGUID string, operation string) error {
+func waitForReady(timeout time.Duration, client cf.Client, serviceInstanceGUID string, operation string) error {
 	done := make(chan bool)
 	var err error
 	go func() {
@@ -383,6 +374,28 @@ func WaitForReady(timeout time.Duration, client cf.Client, serviceInstanceGUID s
 		close(done)
 		return fmt.Errorf("timed out waiting for service instance to %s", operation)
 	}
+}
+
+func initLogger(level string) {
+	// Output to stdout instead of the default stderr
+	log.SetOutput(os.Stdout)
+	log.SetFormatter(&log.TextFormatter{
+		ForceColors: true,
+	})
+
+	if level == "" {
+		var ok bool
+		level, ok = os.LookupEnv("LOG_LEVEL")
+		if !ok {
+			level = log.InfoLevel.String()
+		}
+	}
+
+	l, err := log.ParseLevel(level)
+	if err != nil {
+		l = log.InfoLevel
+	}
+	log.SetLevel(l)
 }
 
 func buildSIMigrator(t *testing.T) string {

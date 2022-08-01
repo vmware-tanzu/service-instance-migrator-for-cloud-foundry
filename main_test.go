@@ -103,31 +103,6 @@ func exportTestOrgSpace(t *testing.T) {
 	space := createTestOrgSpace(t, client, exportOrgName, spaceName)
 	createUserProvidedServiceInstance(t, client, space)
 
-	// cf create-service "p.mysql" "db-small" "mysqldb"
-	si := createManagedServiceInstance(t, client, space, "mysqldb", "dedicated-mysql-broker", "db-small", nil)
-	err = waitForReady(10 * time.Minute, client, si.Guid, "create")
-	require.NoError(t, err, exportFailureErrMsgFormat, "p.mysql", si.Name)
-	createApp(t, client, space, "spring-music", si)
-
-	//  cf create-service ecs-bucket 5gb my_bucket
-	//si = createManagedServiceInstance(t, client, space, "my_bucket", "ecs-broker", "5gb", nil)
-	//err = waitForReady(10 * time.Minute, client, si.Guid, "create")
-	//require.NoError(t, err, exportFailureErrMsgFormat, "ecs-bucket", si.Name)
-	//createApp(t, client, space, "ecs-example", si)
-
-	// cf create-service "SQLServer" "sharedVM" "sql-test"
-	//si = createManagedServiceInstance(t, client, space, "sql-test", "SQLServer", "sharedVM", nil)
-	//err = waitForReady(10 * time.Minute, client, si.Guid, "create")
-	//require.NoError(t, err, exportFailureErrMsgFormat, "SQLServer", si.Name)
-	//createApp(t, client, space, "client-example", si)
-
-	// cf create-service "credhub" "default" "database1" -c '{"username":"admin","password":"password1234"}'
-	serviceCredentials := map[string]interface{}{"username": "admin", "password": "password1234"}
-	si = createManagedServiceInstance(t, client, space, "database1", "credhub-broker", "default", serviceCredentials)
-	err = waitForReady(10 * time.Minute, client, si.Guid, "create")
-	require.NoError(t, err, exportFailureErrMsgFormat, "credhub", si.Name)
-	createApp(t, client, space, "secure-credentials-demo", si)
-
 	executeCommand(t, serviceInstanceMigrator, "export", "space", spaceName, "--org", exportOrgName, "--export-dir", path.Join(cwd, "export"), "--debug")
 }
 
@@ -235,47 +210,6 @@ func createUserProvidedServiceInstance(t *testing.T, client cf.Client, space cfc
 	require.NoError(t, err, "error creating user provided service instance")
 }
 
-func createManagedServiceInstance(t *testing.T, client cf.Client, space cfclient.Space, name, brokerName, planName string, params map[string]interface{}) cfclient.ServiceInstance {
-	var broker cfclient.ServiceBroker
-	brokers, err := client.ListServiceBrokers()
-	require.NoError(t, err, "error listing service brokers")
-	for _, b := range brokers {
-		if b.Name == brokerName {
-			broker = b
-			break
-		}
-	}
-	if broker.Name != brokerName {
-		t.Fatalf("failed to find broker by name: %s", brokerName)
-	}
-	var plans []cfclient.ServicePlan
-	plans, err = client.ListServicePlansByQuery(url.Values{
-		"q": []string{"service_broker_guid:" + broker.Guid},
-	})
-	require.NoError(t, err, "error listing plans by broker guid: %s", broker.Guid)
-
-	servicePlan := plans[0] // default to the first plan
-	for i, p := range plans {
-		if p.Name == planName {
-			servicePlan = plans[i]
-			break
-		}
-	}
-
-	var s cfclient.ServiceInstance
-	s, err = client.CreateServiceInstance(cfclient.ServiceInstanceRequest{
-		Name:            name,
-		SpaceGuid:       space.Guid,
-		ServicePlanGuid: servicePlan.Guid,
-		Parameters:      params,
-		Tags:            nil,
-	})
-	require.NoError(t, err, "error creating service instance: %s", name)
-	log.Infof("creating service instance: %s", name)
-
-	return s
-}
-
 func deleteTestOrgSpace(t *testing.T, client cf.Client, orgName string) {
 	org, err := client.GetOrgByName(orgName)
 	if err != nil {
@@ -324,20 +258,6 @@ func deleteServices(t *testing.T, client cf.Client, orgName, spaceName string) {
 		require.NoError(t, err, "error deleting service instance %s", si.Name)
 		log.Infof("Service instance %s is deleted", si.Name)
 	}
-}
-
-func createApp(t *testing.T, client cf.Client, space cfclient.Space, appName string, si cfclient.ServiceInstance) *cfclient.ServiceBinding {
-	app, err := client.CreateApp(cfclient.AppCreateRequest{
-		Name:      appName,
-		SpaceGuid: space.Guid,
-		State:     cfclient.APP_STOPPED,
-	})
-	require.NoErrorf(t, err, "error creating app %s", appName)
-
-	binding, err := client.CreateServiceBinding(app.Guid, si.Guid)
-	require.NoErrorf(t, err, "error creating app %s", appName)
-
-	return binding
 }
 
 func newCFClient(t *testing.T, config *cf.Config) cf.Client {

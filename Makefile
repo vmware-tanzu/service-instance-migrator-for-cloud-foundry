@@ -82,7 +82,7 @@ test-import-space: ## Run import space e2e tests only
 test-e2e: test-export-org test-import-org test-export-space test-import-space ## Run all e2e tests under test folder
 
 .PHONY: test-all
-test-all: test test-e2e ## Run the unit tests and the e2e tests
+test-all: test test-main test-e2e ## Run the unit tests and the e2e tests
 
 test-bench: ## Run all the benchmark tests
 	go test -bench=. -benchmem ./...
