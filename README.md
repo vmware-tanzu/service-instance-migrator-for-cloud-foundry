@@ -283,7 +283,7 @@ The e2e tests can be executed to test the following migrators:
 - [mysql](https://network.pivotal.io/products/pivotal-mysql/)
 - [ecs](https://network.pivotal.io/products/ecs-service-broker/)
 
-Create a `si-migrator.yml` file under [test/e2e][test/e2e/si-migrator.yml.example] directory. You can use our example for
+Create a `si-migrator.yml` file under [test/e2e](test/e2e/si-migrator.yml.example) directory. You can use our example for
 reference or the complete reference documentation [above](#config-reference).
 
 Run the tests
