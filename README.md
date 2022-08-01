@@ -274,13 +274,6 @@ export CF_TARGET_USERNAME="admin"
 export CF_TARGET_PASSWORD="your-cf-admin-password"
 export CF_TARGET_ORG=tas2
 export CF_TARGET_SPACE=si-migrator-test-space
-
-export OM_CLIENT_ID=""
-export OM_CLIENT_SECRET=""
-export OM_USERNAME="admin"
-export OM_PASSWORD="your-admin-opsman-password"
-export OM_SKIP_SSL_VALIDATION=true
-export OM_TARGET="opsman.tas1.vmware.com"
 ```
 
 Install the [credhub service broker](https://network.pivotal.io/products/credhub-service-broker/). Then, run
