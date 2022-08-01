@@ -72,10 +72,17 @@ More to come in the future:
 
 The `service-instance-migrator` requires user credentials or client credentials to communicate with the Cloud Foundry Cloud Controller API.
 
-Create a `$HOME/.config/si-migrator/si-migrator.yml` using the following template. You can leave out any migrators that
-do not apply to your CF deployments.
+The configuration for the CLI is specified in a file called [si-migrator.yml](si-migrator.yml.example) which can be overridden with the following environment variables.
+
+- `SI_MIGRATOR_CONFIG_FILE` will override cli config file location [default: `./si-migrator.yml`]
+- `SI_MIGRATOR_CONFIG_HOME` will override cli config directory location [default: `.`, `$HOME`, or `$HOME/.config/si-migrator`]
+
+Create a copy of [si-migrator.yml](si-migrator.yml.example) and place in any of the locations above. You can leave out any migrators that do not apply to your CF deployments.
+
+### Config Reference
 
 ```yaml
+debug: false
 export_dir: "/tmp/tas-export"
 exclude_orgs: [system] # optional, you can also use include_orgs for migrating specific orgs
 domains_to_replace:
@@ -200,21 +207,16 @@ migration:
           insecure: false
 ```
 
-The locations of this file can be overridden using environment variables:
-
-- `SI_MIGRATOR_CONFIG_FILE` will override cli config file location [default: `$HOME/si-migrator.yml`]
-- `SI_MIGRATOR_CONFIG_HOME` will override cli config directory location [default: `.`, `$HOME`, or `$HOME/.config`]
-
 The `source_api` and `target_api` as well as `source_bosh` and `target_bosh` stanzas will be looked up from Ops Manager,
 so it's not required to set them. Command line flags will always override any values found in the config file.
 
-The `service-instance-migrator` retrieves the encryption key and credentials for the `cloud-controller` database used by 
-the `ecs` and `sqlserver` migrations if you do not specify these values. It does, however, add some extra time to the 
+The `service-instance-migrator` retrieves the encryption key and credentials for the `cloud-controller` database used by
+the `ecs` and `sqlserver` migrations if you do not specify these values. It does, however, add some extra time to the
 migration to retrieve them.
 
 ### Export
 
-Running `export` without any flags will export all service instances of all supported types from the source foundation. 
+Running `export` without any flags will export all service instances of all supported types from the source foundation.
 This may take a long time depending on how many service instances you have in your source foundation.
 
 ```shell
@@ -223,7 +225,7 @@ service-instance-migrator export
 
 ### Import
 
-Running `import` does the opposite of `export` and as you may have guessed, uses the output from export as it's input. 
+Running `import` does the opposite of `export` and as you may have guessed, uses the output from export as it's input.
 This command will take all the service instances found in the export directory and attempt to import them into the target foundation.
 
 ```shell
@@ -269,7 +271,7 @@ Run `make help` for all other tasks.
 
 ## Integration Tests
 
-The integration tests target just one foundation. Two orgs are created to simulate the effect of having multiple 
+The integration tests target just one foundation. Two orgs are created to simulate the effect of having multiple
 foundations in order to save costs.
 
 ### Run the end-to-end test suite
@@ -292,7 +294,7 @@ make test-e2e
 
 ### Run the demos
 
-To run the demos under [hack](hack), you need to set some environment variables. We suggest first installing 
+To run the demos under [hack](hack), you need to set some environment variables. We suggest first installing
 [direnv](https://direnv.net/) and creating a `.envrc` file under the root of the project.
 Here's an example `.envrc` which exports the required environment variables:
 
@@ -326,7 +328,7 @@ export OM_SKIP_SSL_VALIDATION=true
 export OM_TARGET="opsman.tas1.vmware.com"
 ```
 
-Install the [credhub service broker](https://network.pivotal.io/products/credhub-service-broker/). Then, run 
+Install the [credhub service broker](https://network.pivotal.io/products/credhub-service-broker/). Then, run
 `./hack/credhub-demo.sh` to demo migrating a credhub service instance.
 
 ## Contributing
