@@ -8,6 +8,7 @@
 /export
 /test/e2e/export-org-tests
 /test/e2e/export-space-tests
+/scripts
 
 # Binaries for programs and plugins
 *.exe
