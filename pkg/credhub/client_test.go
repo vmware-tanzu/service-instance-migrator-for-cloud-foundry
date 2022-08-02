@@ -86,7 +86,7 @@ func TestClient_GetCreds(t *testing.T) {
 			defer s.Close()
 			serverURL, err := url.Parse(s.URL)
 			require.NoError(t, err)
-			c := credhub.New(
+			c := credhub.NewClientFactory().New(
 				fmt.Sprintf("%s://%s", serverURL.Scheme, serverURL.Hostname()),
 				serverURL.Port(),
 				serverURL.Port(),

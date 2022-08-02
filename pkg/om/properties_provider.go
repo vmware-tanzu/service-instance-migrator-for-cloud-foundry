@@ -20,7 +20,6 @@ import (
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/config"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/credhub"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/log"
-	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/uaa"
 )
 
 type PropertiesProvider struct {
@@ -111,8 +110,6 @@ func newOpsManClient(c ClientFactory, cfg config.OpsManager) Client {
 		cfg.URL,
 		nil,
 		nil,
-		NewFactory(),
-		uaa.NewFactory(),
 		auth)
 	if err != nil {
 		log.Fatalf("error creating opsman client: %v", err)

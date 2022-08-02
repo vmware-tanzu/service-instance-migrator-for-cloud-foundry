@@ -9,15 +9,13 @@ import (
 )
 
 type FakeClientFactory struct {
-	NewStub        func(string, []byte, om.CertAppender, om.OpsManagerFactory, om.UAAFactory, config.Authentication) (om.Client, error)
+	NewStub        func(string, []byte, om.CertAppender, config.Authentication) (om.Client, error)
 	newMutex       sync.RWMutex
 	newArgsForCall []struct {
 		arg1 string
 		arg2 []byte
 		arg3 om.CertAppender
-		arg4 om.OpsManagerFactory
-		arg5 om.UAAFactory
-		arg6 config.Authentication
+		arg4 config.Authentication
 	}
 	newReturns struct {
 		result1 om.Client
@@ -31,7 +29,7 @@ type FakeClientFactory struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeClientFactory) New(arg1 string, arg2 []byte, arg3 om.CertAppender, arg4 om.OpsManagerFactory, arg5 om.UAAFactory, arg6 config.Authentication) (om.Client, error) {
+func (fake *FakeClientFactory) New(arg1 string, arg2 []byte, arg3 om.CertAppender, arg4 config.Authentication) (om.Client, error) {
 	var arg2Copy []byte
 	if arg2 != nil {
 		arg2Copy = make([]byte, len(arg2))
@@ -43,16 +41,14 @@ func (fake *FakeClientFactory) New(arg1 string, arg2 []byte, arg3 om.CertAppende
 		arg1 string
 		arg2 []byte
 		arg3 om.CertAppender
-		arg4 om.OpsManagerFactory
-		arg5 om.UAAFactory
-		arg6 config.Authentication
-	}{arg1, arg2Copy, arg3, arg4, arg5, arg6})
+		arg4 config.Authentication
+	}{arg1, arg2Copy, arg3, arg4})
 	stub := fake.NewStub
 	fakeReturns := fake.newReturns
-	fake.recordInvocation("New", []interface{}{arg1, arg2Copy, arg3, arg4, arg5, arg6})
+	fake.recordInvocation("New", []interface{}{arg1, arg2Copy, arg3, arg4})
 	fake.newMutex.Unlock()
 	if stub != nil {
-		return stub(arg1, arg2, arg3, arg4, arg5, arg6)
+		return stub(arg1, arg2, arg3, arg4)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -66,17 +62,17 @@ func (fake *FakeClientFactory) NewCallCount() int {
 	return len(fake.newArgsForCall)
 }
 
-func (fake *FakeClientFactory) NewCalls(stub func(string, []byte, om.CertAppender, om.OpsManagerFactory, om.UAAFactory, config.Authentication) (om.Client, error)) {
+func (fake *FakeClientFactory) NewCalls(stub func(string, []byte, om.CertAppender, config.Authentication) (om.Client, error)) {
 	fake.newMutex.Lock()
 	defer fake.newMutex.Unlock()
 	fake.NewStub = stub
 }
 
-func (fake *FakeClientFactory) NewArgsForCall(i int) (string, []byte, om.CertAppender, om.OpsManagerFactory, om.UAAFactory, config.Authentication) {
+func (fake *FakeClientFactory) NewArgsForCall(i int) (string, []byte, om.CertAppender, config.Authentication) {
 	fake.newMutex.RLock()
 	defer fake.newMutex.RUnlock()
 	argsForCall := fake.newArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4, argsForCall.arg5, argsForCall.arg6
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4
 }
 
 func (fake *FakeClientFactory) NewReturns(result1 om.Client, result2 error) {

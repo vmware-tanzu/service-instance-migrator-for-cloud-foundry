@@ -19,7 +19,6 @@ package main_test
 
 import (
 	"fmt"
-	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/migrate"
 	"go/build"
 	"io/ioutil"
 	"net/url"
@@ -33,12 +32,15 @@ import (
 	"time"
 
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh"
+	boshcli "github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh/cli"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/cf"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/config"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/credhub"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/io"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/log"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/migrate"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/om"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/uaa"
 
 	"github.com/cloudfoundry-community/go-cfclient"
 	"github.com/stretchr/testify/assert"
@@ -89,7 +91,12 @@ func exportTestOrgSpace(t *testing.T) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())).SourceApiConfig()
+
+	uaaFactory := uaa.NewFactory()
+	omFactory := om.NewFactory()
+	dirFactory := boshcli.NewFactory()
+
+	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClientFactory(omFactory, uaaFactory), bosh.NewClientFactory(dirFactory, uaaFactory), credhub.NewClientFactory())).SourceApiConfig()
 
 	client := newCFClient(t, &cf.Config{
 		URL:         cfg.SourceApi.URL,
@@ -122,7 +129,11 @@ func importTestOrgSpace(t *testing.T) {
 		log.Fatalln(err)
 	}
 
-	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())).TargetApiConfig()
+	uaaFactory := uaa.NewFactory()
+	omFactory := om.NewFactory()
+	dirFactory := boshcli.NewFactory()
+
+	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClientFactory(omFactory, uaaFactory), bosh.NewClientFactory(dirFactory, uaaFactory), credhub.NewClientFactory())).TargetApiConfig()
 
 	client := newCFClient(t, &cf.Config{
 		URL:         cfg.TargetApi.URL,

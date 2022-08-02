@@ -48,23 +48,19 @@ type ClientFactory interface {
 		allProxy string,
 		trustedCertPEM []byte,
 		certAppender CertAppender,
-		directorFactory DirectorFactory,
-		uaaFactory UAAFactory,
 		boshAuth config.Authentication) (Client, error)
 }
 
-type ClientFactoryFunc func(url string, allProxy string, trustedCertPEM []byte, certAppender CertAppender, directorFactory DirectorFactory, uaaFactory UAAFactory, boshAuth config.Authentication) (Client, error)
+type ClientFactoryFunc func(url string, allProxy string, trustedCertPEM []byte, certAppender CertAppender, boshAuth config.Authentication) (Client, error)
 
 func (f ClientFactoryFunc) New(
 	url string,
 	allProxy string,
 	trustedCertPEM []byte,
 	certAppender CertAppender,
-	directorFactory DirectorFactory,
-	uaaFactory UAAFactory,
 	boshAuth config.Authentication,
 ) (Client, error) {
-	return f(url, allProxy, trustedCertPEM, certAppender, directorFactory, uaaFactory, boshAuth)
+	return f(url, allProxy, trustedCertPEM, certAppender, boshAuth)
 }
 
 type ClientImpl struct {
@@ -118,39 +114,28 @@ type AuthenticationOptions struct {
 	URL string
 }
 
-func NewClientFactory() ClientFactoryFunc {
-	return New
-}
+func NewClientFactory(directorFactory DirectorFactory, uaaFactory UAAFactory) ClientFactoryFunc {
+	return func(url string, allProxy string, trustedCertPEM []byte, certAppender CertAppender, boshAuth config.Authentication) (Client, error) {
+		certAppender.AppendCertsFromPEM(trustedCertPEM)
 
-func New(
-	url string,
-	allProxy string,
-	trustedCertPEM []byte,
-	certAppender CertAppender,
-	directorFactory DirectorFactory,
-	uaaFactory UAAFactory,
-	boshAuth config.Authentication,
-) (Client, error) {
+		noAuthClient := &ClientImpl{url: url, allProxy: allProxy, trustedCertPEM: trustedCertPEM, directorFactory: directorFactory}
 
-	certAppender.AppendCertsFromPEM(trustedCertPEM)
+		boshInfo, err := noAuthClient.GetInfo()
+		if err != nil {
+			return nil, errors.Wrap(err, "error fetching BOSH director information")
+		}
 
-	noAuthClient := &ClientImpl{url: url, allProxy: allProxy, trustedCertPEM: trustedCertPEM, directorFactory: directorFactory}
-
-	boshInfo, err := noAuthClient.GetInfo()
-	if err != nil {
-		return nil, errors.Wrap(err, "error fetching BOSH director information")
+		return &ClientImpl{
+			url:             url,
+			allProxy:        allProxy,
+			trustedCertPEM:  trustedCertPEM,
+			boshAuth:        boshAuth,
+			uaaFactory:      uaaFactory,
+			directorFactory: directorFactory,
+			PollingInterval: 5,
+			BoshInfo:        boshInfo,
+		}, nil
 	}
-
-	return &ClientImpl{
-		url:             url,
-		allProxy:        allProxy,
-		trustedCertPEM:  trustedCertPEM,
-		boshAuth:        boshAuth,
-		uaaFactory:      uaaFactory,
-		directorFactory: directorFactory,
-		PollingInterval: 5,
-		BoshInfo:        boshInfo,
-	}, nil
 }
 
 func (c *ClientImpl) GetInfo() (Info, error) {

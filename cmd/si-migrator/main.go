@@ -16,6 +16,7 @@ package main
 
 import (
 	"fmt"
+	boshcli "github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh/cli"
 	"os"
 
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh"
@@ -25,6 +26,7 @@ import (
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/log"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/migrate"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/om"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/uaa"
 
 	"github.com/spf13/cobra"
 )
@@ -66,10 +68,14 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	uaaFactory := uaa.NewFactory()
+	omFactory := om.NewFactory()
+	dirFactory := boshcli.NewFactory()
+
 	if err := cmd.CreateRootCommand(
 		cfg,
-		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())),
-		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())),
+		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClientFactory(omFactory, uaaFactory), bosh.NewClientFactory(dirFactory, uaaFactory), credhub.NewClientFactory())),
+		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClientFactory(omFactory, uaaFactory), bosh.NewClientFactory(dirFactory, uaaFactory), credhub.NewClientFactory())),
 	).Execute(); err != nil {
 		log.Fatalln(err)
 	}

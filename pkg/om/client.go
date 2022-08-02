@@ -69,22 +69,18 @@ type ClientFactory interface {
 	New(url string,
 		trustedCertPEM []byte,
 		certAppender CertAppender,
-		opsManagerFactory OpsManagerFactory,
-		uaaFactory UAAFactory,
 		boshAuth config.Authentication) (Client, error)
 }
 
-type ClientFactoryFunc func(url string, trustedCertPEM []byte, certAppender CertAppender, opsManagerFactory OpsManagerFactory, uaaFactory UAAFactory, auth config.Authentication) (Client, error)
+type ClientFactoryFunc func(url string, trustedCertPEM []byte, certAppender CertAppender, auth config.Authentication) (Client, error)
 
 func (f ClientFactoryFunc) New(
 	url string,
 	trustedCertPEM []byte,
 	certAppender CertAppender,
-	opsManagerFactory OpsManagerFactory,
-	uaaFactory UAAFactory,
 	auth config.Authentication,
 ) (Client, error) {
-	return f(url, trustedCertPEM, certAppender, opsManagerFactory, uaaFactory, auth)
+	return f(url, trustedCertPEM, certAppender, auth)
 }
 
 type ClientImpl struct {
@@ -95,30 +91,20 @@ type ClientImpl struct {
 	Auth              config.Authentication
 }
 
-func NewClientFactory() ClientFactoryFunc {
-	return New
-}
+func NewClientFactory(opsManagerFactory OpsManagerFactory, uaaFactory UAAFactory) ClientFactoryFunc {
+	return func(url string, trustedCertPEM []byte, certAppender CertAppender, auth config.Authentication) (Client, error) {
+		if certAppender != nil {
+			certAppender.AppendCertsFromPEM(trustedCertPEM)
+		}
 
-func New(
-	url string,
-	trustedCertPEM []byte,
-	certAppender CertAppender,
-	opsManagerFactory OpsManagerFactory,
-	uaaFactory UAAFactory,
-	auth config.Authentication,
-) (Client, error) {
-
-	if certAppender != nil {
-		certAppender.AppendCertsFromPEM(trustedCertPEM)
+		return &ClientImpl{
+			URL:               url,
+			TrustedCertPEM:    trustedCertPEM,
+			Auth:              auth,
+			uaaFactory:        uaaFactory,
+			opsManagerFactory: opsManagerFactory,
+		}, nil
 	}
-
-	return &ClientImpl{
-		URL:               url,
-		TrustedCertPEM:    trustedCertPEM,
-		Auth:              auth,
-		uaaFactory:        uaaFactory,
-		opsManagerFactory: opsManagerFactory,
-	}, nil
 }
 
 func (c *ClientImpl) OpsMan() (OpsManager, error) {

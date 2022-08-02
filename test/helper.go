@@ -31,13 +31,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/migrate"
-
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh"
+	boshcli "github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh/cli"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/cf"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/config"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/credhub"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/migrate"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/om"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/uaa"
 
 	"github.com/cloudfoundry-community/go-cfclient"
 	log "github.com/sirupsen/logrus"
@@ -119,8 +120,12 @@ func newCFClient(t *testing.T, toSource bool) cf.Client {
 		log.Fatalln(err)
 	}
 
+	uaaFactory := uaa.NewFactory()
+	omFactory := om.NewFactory()
+	dirFactory := boshcli.NewFactory()
+
 	if toSource {
-		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())).SourceApiConfig()
+		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClientFactory(omFactory, uaaFactory), bosh.NewClientFactory(dirFactory, uaaFactory), credhub.NewClientFactory())).SourceApiConfig()
 		client, err := cf.NewClient(&cf.Config{
 			URL:         cfg.SourceApi.URL,
 			Username:    cfg.SourceApi.Username,
@@ -132,7 +137,8 @@ func newCFClient(t *testing.T, toSource bool) cf.Client {
 		return client
 	}
 
-	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())).TargetApiConfig()
+	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClientFactory(omFactory, uaaFactory), bosh.NewClientFactory(dirFactory, uaaFactory), credhub.NewClientFactory())).TargetApiConfig()
+
 	client, err := cf.NewClient(&cf.Config{
 		URL:         cfg.TargetApi.URL,
 		Username:    cfg.TargetApi.Username,

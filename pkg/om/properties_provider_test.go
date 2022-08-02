@@ -639,13 +639,13 @@ func FakeBoshPropertiesBuilderFunc() func(p *config.BoshProperties) *configfakes
 }
 
 func FakeOpsManagerClientFactory(client om.Client) om.ClientFactoryFunc {
-	return func(url string, trustedCertPEM []byte, certAppender om.CertAppender, opsManagerFactory om.OpsManagerFactory, uaaFactory om.UAAFactory, auth config.Authentication) (om.Client, error) {
+	return func(url string, trustedCertPEM []byte, certAppender om.CertAppender, auth config.Authentication) (om.Client, error) {
 		return client, nil
 	}
 }
 
 func FakeBoshClientFactory(ips []string) bosh.ClientFactoryFunc {
-	return func(url string, allProxy string, trustedCertPEM []byte, certAppender bosh.CertAppender, directorFactory bosh.DirectorFactory, uaaFactory bosh.UAAFactory, boshAuth config.Authentication) (bosh.Client, error) {
+	return func(url string, allProxy string, trustedCertPEM []byte, certAppender bosh.CertAppender, boshAuth config.Authentication) (bosh.Client, error) {
 		return &boshfakes.FakeClient{
 			FindVMStub: func(s string, s2 string) (director.VMInfo, bool, error) {
 				return director.VMInfo{

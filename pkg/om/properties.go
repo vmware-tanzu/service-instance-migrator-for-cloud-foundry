@@ -19,12 +19,10 @@ import (
 	"fmt"
 
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh"
-	boshcli "github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh/cli"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/config"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/credhub"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/log"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/net"
-	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/uaa"
 )
 
 const (
@@ -229,8 +227,6 @@ func newBoshClient(b bosh.ClientFactory, properties config.BoshProperties) bosh.
 		properties.AllProxy,
 		[]byte(trustedCert),
 		certPool,
-		boshcli.NewFactory(),
-		uaa.NewFactory(),
 		auth)
 	if err != nil {
 		log.Fatalf("error creating bosh client: %v", err)

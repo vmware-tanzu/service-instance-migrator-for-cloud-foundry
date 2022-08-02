@@ -9,16 +9,14 @@ import (
 )
 
 type FakeClientFactory struct {
-	NewStub        func(string, string, []byte, bosh.CertAppender, bosh.DirectorFactory, bosh.UAAFactory, config.Authentication) (bosh.Client, error)
+	NewStub        func(string, string, []byte, bosh.CertAppender, config.Authentication) (bosh.Client, error)
 	newMutex       sync.RWMutex
 	newArgsForCall []struct {
 		arg1 string
 		arg2 string
 		arg3 []byte
 		arg4 bosh.CertAppender
-		arg5 bosh.DirectorFactory
-		arg6 bosh.UAAFactory
-		arg7 config.Authentication
+		arg5 config.Authentication
 	}
 	newReturns struct {
 		result1 bosh.Client
@@ -32,7 +30,7 @@ type FakeClientFactory struct {
 	invocationsMutex sync.RWMutex
 }
 
-func (fake *FakeClientFactory) New(arg1 string, arg2 string, arg3 []byte, arg4 bosh.CertAppender, arg5 bosh.DirectorFactory, arg6 bosh.UAAFactory, arg7 config.Authentication) (bosh.Client, error) {
+func (fake *FakeClientFactory) New(arg1 string, arg2 string, arg3 []byte, arg4 bosh.CertAppender, arg5 config.Authentication) (bosh.Client, error) {
 	var arg3Copy []byte
 	if arg3 != nil {
 		arg3Copy = make([]byte, len(arg3))
@@ -45,16 +43,14 @@ func (fake *FakeClientFactory) New(arg1 string, arg2 string, arg3 []byte, arg4 b
 		arg2 string
 		arg3 []byte
 		arg4 bosh.CertAppender
-		arg5 bosh.DirectorFactory
-		arg6 bosh.UAAFactory
-		arg7 config.Authentication
-	}{arg1, arg2, arg3Copy, arg4, arg5, arg6, arg7})
+		arg5 config.Authentication
+	}{arg1, arg2, arg3Copy, arg4, arg5})
 	stub := fake.NewStub
 	fakeReturns := fake.newReturns
-	fake.recordInvocation("New", []interface{}{arg1, arg2, arg3Copy, arg4, arg5, arg6, arg7})
+	fake.recordInvocation("New", []interface{}{arg1, arg2, arg3Copy, arg4, arg5})
 	fake.newMutex.Unlock()
 	if stub != nil {
-		return stub(arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+		return stub(arg1, arg2, arg3, arg4, arg5)
 	}
 	if specificReturn {
 		return ret.result1, ret.result2
@@ -68,17 +64,17 @@ func (fake *FakeClientFactory) NewCallCount() int {
 	return len(fake.newArgsForCall)
 }
 
-func (fake *FakeClientFactory) NewCalls(stub func(string, string, []byte, bosh.CertAppender, bosh.DirectorFactory, bosh.UAAFactory, config.Authentication) (bosh.Client, error)) {
+func (fake *FakeClientFactory) NewCalls(stub func(string, string, []byte, bosh.CertAppender, config.Authentication) (bosh.Client, error)) {
 	fake.newMutex.Lock()
 	defer fake.newMutex.Unlock()
 	fake.NewStub = stub
 }
 
-func (fake *FakeClientFactory) NewArgsForCall(i int) (string, string, []byte, bosh.CertAppender, bosh.DirectorFactory, bosh.UAAFactory, config.Authentication) {
+func (fake *FakeClientFactory) NewArgsForCall(i int) (string, string, []byte, bosh.CertAppender, config.Authentication) {
 	fake.newMutex.RLock()
 	defer fake.newMutex.RUnlock()
 	argsForCall := fake.newArgsForCall[i]
-	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4, argsForCall.arg5, argsForCall.arg6, argsForCall.arg7
+	return argsForCall.arg1, argsForCall.arg2, argsForCall.arg3, argsForCall.arg4, argsForCall.arg5
 }
 
 func (fake *FakeClientFactory) NewReturns(result1 bosh.Client, result2 error) {

@@ -372,13 +372,14 @@ func TestClient_VerifyAuth(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.beforeNewFunc(tt.fields)
-			client, err := bosh.New(
+			client, err := bosh.NewClientFactory(
+				tt.fields.directorFactory,
+				tt.fields.uaaFactory,
+			).New(
 				tt.fields.url,
 				tt.fields.allProxy,
 				tt.fields.trustedCertPEM,
 				tt.fields.certAppender,
-				tt.fields.directorFactory,
-				tt.fields.uaaFactory,
 				tt.fields.boshAuth,
 			)
 			if (err != nil) != tt.wantNewErr {
@@ -674,13 +675,14 @@ func TestClient_FindDeployment(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.beforeNewFunc(tt.fields, tt.args)
-			client, err := bosh.New(
+			client, err := bosh.NewClientFactory(
+				tt.fields.directorFactory,
+				tt.fields.uaaFactory,
+			).New(
 				tt.fields.url,
 				tt.fields.allProxy,
 				tt.fields.trustedCertPEM,
 				tt.fields.certAppender,
-				tt.fields.directorFactory,
-				tt.fields.uaaFactory,
 				tt.fields.boshAuth,
 			)
 			if (err != nil) != tt.wantNewErr {

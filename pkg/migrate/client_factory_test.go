@@ -227,13 +227,14 @@ func TestClientFactory_SourceOpsManClient(t *testing.T) {
 				ConfigLoader: new(fakes.FakeLoader),
 				BoshFactory:  new(boshfakes.FakeClientFactory),
 				OpsmanFactory: &omfakes.FakeClientFactory{
-					NewStub: func(s string, bytes []byte, appender om.CertAppender, factory om.OpsManagerFactory, factory2 om.UAAFactory, authentication config.Authentication) (om.Client, error) {
-						return om.New(
+					NewStub: func(s string, bytes []byte, appender om.CertAppender, authentication config.Authentication) (om.Client, error) {
+						return om.NewClientFactory(
+							om.NewFactory(),
+							uaa.NewFactory(),
+						).New(
 							"https://opsman.url.com",
 							nil,
 							nil,
-							om.NewFactory(),
-							uaa.NewFactory(),
 							config.Authentication{
 								UAA: config.UAAAuthentication{
 									URL: "https://opsman.url.com/uaa",
@@ -306,13 +307,14 @@ func TestClientFactory_TargetOpsManClient(t *testing.T) {
 				ConfigLoader: new(fakes.FakeLoader),
 				BoshFactory:  new(boshfakes.FakeClientFactory),
 				OpsmanFactory: &omfakes.FakeClientFactory{
-					NewStub: func(s string, bytes []byte, appender om.CertAppender, factory om.OpsManagerFactory, factory2 om.UAAFactory, authentication config.Authentication) (om.Client, error) {
-						return om.New(
+					NewStub: func(s string, bytes []byte, appender om.CertAppender, authentication config.Authentication) (om.Client, error) {
+						return om.NewClientFactory(
+							om.NewFactory(),
+							uaa.NewFactory(),
+						).New(
 							"https://opsman.url.com",
 							nil,
 							nil,
-							om.NewFactory(),
-							uaa.NewFactory(),
 							config.Authentication{
 								UAA: config.UAAAuthentication{
 									URL: "https://opsman.url.com/uaa",
@@ -401,7 +403,7 @@ func TestClientFactory_SourceBoshClient(t *testing.T) {
 					},
 				},
 				BoshFactory: &boshfakes.FakeClientFactory{
-					NewStub: func(s string, s2 string, bytes []byte, appender bosh.CertAppender, factory bosh.DirectorFactory, factory2 bosh.UAAFactory, authentication config.Authentication) (bosh.Client, error) {
+					NewStub: func(s string, s2 string, bytes []byte, appender bosh.CertAppender, authentication config.Authentication) (bosh.Client, error) {
 						return &bosh.ClientImpl{
 							PollingInterval: 0,
 							BoshInfo: bosh.Info{
@@ -490,7 +492,7 @@ func TestClientFactory_TargetBoshClient(t *testing.T) {
 					},
 				},
 				BoshFactory: &boshfakes.FakeClientFactory{
-					NewStub: func(s string, s2 string, bytes []byte, appender bosh.CertAppender, factory bosh.DirectorFactory, factory2 bosh.UAAFactory, authentication config.Authentication) (bosh.Client, error) {
+					NewStub: func(s string, s2 string, bytes []byte, appender bosh.CertAppender, authentication config.Authentication) (bosh.Client, error) {
 						return &bosh.ClientImpl{
 							PollingInterval: 0,
 							BoshInfo: bosh.Info{

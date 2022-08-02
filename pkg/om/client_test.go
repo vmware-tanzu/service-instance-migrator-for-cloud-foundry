@@ -306,12 +306,13 @@ func TestClient_BoshEnvironment(t *testing.T) {
 	g := NewGomegaWithT(t)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c, err := om.New(
+			c, err := om.NewClientFactory(
+				tt.fields.opsManagerFactory,
+				tt.fields.uaaFactory,
+			).New(
 				tt.fields.url,
 				tt.fields.trustedCertPEM,
 				tt.fields.certAppender,
-				tt.fields.opsManagerFactory,
-				tt.fields.uaaFactory,
 				tt.fields.auth,
 			)
 			require.NoError(t, err)
@@ -477,12 +478,13 @@ func TestClient_CertificateAuthorities(t *testing.T) {
 	g := NewGomegaWithT(t)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c, err := om.New(
+			c, err := om.NewClientFactory(
+				tt.fields.opsManagerFactory,
+				tt.fields.uaaFactory,
+			).New(
 				tt.fields.url,
 				tt.fields.trustedCertPEM,
 				tt.fields.certAppender,
-				tt.fields.opsManagerFactory,
-				tt.fields.uaaFactory,
 				tt.fields.auth,
 			)
 			require.NoError(t, err)
@@ -684,12 +686,14 @@ func TestClient_DeployedProduct(t *testing.T) {
 	g := NewGomegaWithT(t)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c, err := om.New(
+
+			c, err := om.NewClientFactory(
+				tt.fields.opsManagerFactory,
+				tt.fields.uaaFactory,
+			).New(
 				tt.fields.url,
 				tt.fields.trustedCertPEM,
 				tt.fields.certAppender,
-				tt.fields.opsManagerFactory,
-				tt.fields.uaaFactory,
 				tt.fields.auth,
 			)
 			require.NoError(t, err)
@@ -864,12 +868,13 @@ func TestClient_DeployedProductCredentials(t *testing.T) {
 	g := NewGomegaWithT(t)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c, err := om.New(
+			c, err := om.NewClientFactory(
+				tt.fields.opsManagerFactory,
+				tt.fields.uaaFactory,
+			).New(
 				tt.fields.url,
 				tt.fields.trustedCertPEM,
 				tt.fields.certAppender,
-				tt.fields.opsManagerFactory,
-				tt.fields.uaaFactory,
 				tt.fields.auth,
 			)
 			require.NoError(t, err)
@@ -1033,12 +1038,13 @@ func TestClient_StagedProductProperties(t *testing.T) {
 	g := NewGomegaWithT(t)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c, err := om.New(
+			c, err := om.NewClientFactory(
+				tt.fields.opsManagerFactory,
+				tt.fields.uaaFactory,
+			).New(
 				tt.fields.url,
 				tt.fields.trustedCertPEM,
 				tt.fields.certAppender,
-				tt.fields.opsManagerFactory,
-				tt.fields.uaaFactory,
 				tt.fields.auth,
 			)
 			require.NoError(t, err)

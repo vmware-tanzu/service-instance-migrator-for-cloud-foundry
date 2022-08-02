@@ -68,36 +68,26 @@ type ClientImpl struct {
 }
 
 func NewClientFactory() ClientFactoryFunc {
-	return New
-}
+	return func(url string, credhubPort string, uaaPort string, allProxy string, caCert []byte, clientID string, clientSecret string) Client {
+		var dialContextFunc = (&net.Dialer{
+			Timeout:   30 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext
+		if len(allProxy) > 0 {
+			socks := proxy.NewSocks5Proxy(proxy.NewHostKey(), golog.New(ioutil.Discard, "", golog.LstdFlags), 1*time.Minute)
+			dialContextFunc = boshhttp.SOCKS5DialContextFuncFromAllProxy(allProxy, socks)
+		}
 
-func New(
-	url string,
-	credhubPort string,
-	uaaPort string,
-	allProxy string,
-	caCert []byte,
-	clientID string,
-	clientSecret string,
-) Client {
-	var dialContextFunc = (&net.Dialer{
-		Timeout:   30 * time.Second,
-		KeepAlive: 30 * time.Second,
-	}).DialContext
-	if len(allProxy) > 0 {
-		socks := proxy.NewSocks5Proxy(proxy.NewHostKey(), golog.New(ioutil.Discard, "", golog.LstdFlags), 1*time.Minute)
-		dialContextFunc = boshhttp.SOCKS5DialContextFuncFromAllProxy(allProxy, socks)
-	}
-
-	return ClientImpl{
-		allProxy:        allProxy,
-		url:             url,
-		credhubPort:     credhubPort,
-		uaaPort:         uaaPort,
-		caCert:          caCert,
-		clientID:        clientID,
-		clientSecret:    clientSecret,
-		dialContextFunc: dialContextFunc,
+		return ClientImpl{
+			allProxy:        allProxy,
+			url:             url,
+			credhubPort:     credhubPort,
+			uaaPort:         uaaPort,
+			caCert:          caCert,
+			clientID:        clientID,
+			clientSecret:    clientSecret,
+			dialContextFunc: dialContextFunc,
+		}
 	}
 }
 

@@ -17,12 +17,10 @@ package migrate
 import (
 	"crypto/x509"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh"
-	boshcli "github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh/cli"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/cf"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/config"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/log"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/om"
-	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/uaa"
 )
 
 type ClientFactory struct {
@@ -111,8 +109,6 @@ func newBoshClient(b bosh.ClientFactory, cfg config.Bosh) bosh.Client {
 		cfg.AllProxy,
 		[]byte(cfg.TrustedCert),
 		certPool,
-		boshcli.NewFactory(),
-		uaa.NewFactory(),
 		cfg.Authentication)
 	if err != nil {
 		log.Fatalf("error creating bosh client: %v", err)
@@ -163,8 +159,6 @@ func newOpsManClient(c om.ClientFactory, cfg config.OpsManager) om.Client {
 		cfg.URL,
 		nil,
 		nil,
-		om.NewFactory(),
-		uaa.NewFactory(),
 		auth)
 	if err != nil {
 		log.Fatalf("error creating opsman client: %v", err)
