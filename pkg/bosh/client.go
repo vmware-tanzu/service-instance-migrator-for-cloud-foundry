@@ -118,7 +118,7 @@ type AuthenticationOptions struct {
 	URL string
 }
 
-func NewClient() ClientFactoryFunc {
+func NewClientFactory() ClientFactoryFunc {
 	return New
 }
 

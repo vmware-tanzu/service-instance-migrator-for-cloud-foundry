@@ -67,7 +67,7 @@ type ClientImpl struct {
 	dialContextFunc           DialContextFunc
 }
 
-func NewClient() ClientFactoryFunc {
+func NewClientFactory() ClientFactoryFunc {
 	return New
 }
 

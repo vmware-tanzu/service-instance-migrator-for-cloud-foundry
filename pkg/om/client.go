@@ -95,7 +95,7 @@ type ClientImpl struct {
 	Auth              config.Authentication
 }
 
-func NewClient() ClientFactoryFunc {
+func NewClientFactory() ClientFactoryFunc {
 	return New
 }
 
