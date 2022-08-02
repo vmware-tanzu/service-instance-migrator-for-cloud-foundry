@@ -120,7 +120,7 @@ func newCFClient(t *testing.T, toSource bool) cf.Client {
 	}
 
 	if toSource {
-		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClient(), bosh.NewClient(), credhub.NewClient())).SourceApiConfig()
+		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())).SourceApiConfig()
 		client, err := cf.NewClient(&cf.Config{
 			URL:         cfg.SourceApi.URL,
 			Username:    cfg.SourceApi.Username,
@@ -132,7 +132,7 @@ func newCFClient(t *testing.T, toSource bool) cf.Client {
 		return client
 	}
 
-	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClient(), bosh.NewClient(), credhub.NewClient())).TargetApiConfig()
+	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())).TargetApiConfig()
 	client, err := cf.NewClient(&cf.Config{
 		URL:         cfg.TargetApi.URL,
 		Username:    cfg.TargetApi.Username,

@@ -73,7 +73,7 @@ func CreateRootCommand(
 
 func addExportCommands(ctx context.Context, rootCmd *cobra.Command, cfg *config.Config, mr config.MigrationReader, configLoader config.Loader) {
 	reportSummary := report.NewSummary(os.Stdout)
-	clientFactory := migrate.NewClientFactory(configLoader, bosh.NewClient(), om.NewClient(), cfg.Foundations.Source)
+	clientFactory := migrate.NewClientFactory(configLoader, bosh.NewClientFactory(), om.NewClientFactory(), cfg.Foundations.Source)
 	me := cc.NewManifestExporter(cfg, clientFactory)
 	factory := NewExportMigratorFactory(cfg, clientFactory)
 	sf := cc.NewCloudControllerServiceFactory(clientFactory, me)
@@ -107,7 +107,7 @@ func addExportCommands(ctx context.Context, rootCmd *cobra.Command, cfg *config.
 
 func addImportCommands(ctx context.Context, rootCmd *cobra.Command, cfg *config.Config, mr config.MigrationReader, configLoader config.Loader) {
 	reportSummary := report.NewSummary(os.Stdout)
-	clientFactory := migrate.NewClientFactory(configLoader, bosh.NewClient(), om.NewClient(), cfg.Foundations.Target)
+	clientFactory := migrate.NewClientFactory(configLoader, bosh.NewClientFactory(), om.NewClientFactory(), cfg.Foundations.Target)
 	factory := NewImportMigratorFactory(cfg, clientFactory)
 	sf := cc.NewCloudControllerServiceFactory(clientFactory, nil)
 	mh := migrate.NewMigratorHelper(mr)

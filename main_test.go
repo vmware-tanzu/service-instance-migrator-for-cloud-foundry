@@ -89,7 +89,7 @@ func exportTestOrgSpace(t *testing.T) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClient(), bosh.NewClient(), credhub.NewClient())).SourceApiConfig()
+	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())).SourceApiConfig()
 
 	client := newCFClient(t, &cf.Config{
 		URL:         cfg.SourceApi.URL,
@@ -122,7 +122,7 @@ func importTestOrgSpace(t *testing.T) {
 		log.Fatalln(err)
 	}
 
-	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClient(), bosh.NewClient(), credhub.NewClient())).TargetApiConfig()
+	migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())).TargetApiConfig()
 
 	client := newCFClient(t, &cf.Config{
 		URL:         cfg.TargetApi.URL,

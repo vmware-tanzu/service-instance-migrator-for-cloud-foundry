@@ -68,8 +68,8 @@ func main() {
 
 	if err := cmd.CreateRootCommand(
 		cfg,
-		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClient(), bosh.NewClient(), credhub.NewClient())),
-		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClient(), bosh.NewClient(), credhub.NewClient())),
+		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Source, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())),
+		migrate.NewConfigLoader(cfg, mr, om.NewPropertiesProvider(cfg, cfg.Foundations.Target, om.NewClientFactory(), bosh.NewClientFactory(), credhub.NewClientFactory())),
 	).Execute(); err != nil {
 		log.Fatalln(err)
 	}
