@@ -304,11 +304,10 @@ func (c *Config) initViperConfig() {
 
 	// If a config file is found, read it in.
 	if err := v.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-			log.Errorf("failed to load config file: %s, error: %s", v.ConfigFileUsed(), err)
-			panic(err)
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			log.Errorf("config not found, error: %s", err)
 		} else {
-			log.Errorf("failed to read config, error: %s", err)
+			log.Errorf("failed to load config file: %s, error: %s", v.ConfigFileUsed(), err)
 			panic(err)
 		}
 	}
