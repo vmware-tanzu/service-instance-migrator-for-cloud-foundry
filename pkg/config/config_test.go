@@ -145,11 +145,7 @@ func TestNewDefaultConfig(t *testing.T) {
 			if tt.beforeFunc != nil {
 				tt.beforeFunc()
 			}
-			got, err := NewDefaultConfig()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("NewDefaultConfig() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			got := NewDefaultConfig()
 			if diff := cmp.Diff(tt.want, got,
 				cmpopts.IgnoreUnexported(Config{}),
 			); diff != "" {

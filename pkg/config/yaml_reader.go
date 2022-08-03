@@ -63,10 +63,7 @@ func ReadFromDir(path string) (*YAMLMigrationReader, error) {
 	var r *YAMLMigrationReader
 
 	if len(b) == 0 {
-		cfg, err := NewDefaultConfig()
-		if err != nil {
-			return nil, err
-		}
+		cfg := NewDefaultConfig()
 		r = &YAMLMigrationReader{
 			migration:      &cfg.Migration,
 			migrationBytes: b,

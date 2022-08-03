@@ -15,7 +15,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/migrate"
 	"os"
 
@@ -27,11 +26,7 @@ import (
 )
 
 func main() {
-	cfg, err := config.NewDefaultConfig()
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		os.Exit(1)
-	}
+	cfg := config.NewDefaultConfig()
 
 	rootCmd := cmd.CreateRootCommand(
 		cfg,
