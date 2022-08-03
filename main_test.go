@@ -82,11 +82,7 @@ func exportTestOrgSpace(t *testing.T) {
 		log.Fatalf("could not get current working dir, %s", err)
 	}
 
-	cfg, err := config.NewDefaultConfig()
-	if err != nil {
-		log.Fatalf("could not load config, %s", err)
-	}
-
+	cfg := config.NewDefaultConfig()
 	mr, err := config.NewMigrationReader(cfg)
 	if err != nil {
 		log.Fatalln(err)
@@ -119,11 +115,7 @@ func importTestOrgSpace(t *testing.T) {
 		log.Fatalf("could not get current working dir, %s", err)
 	}
 
-	cfg, err := config.NewDefaultConfig()
-	if err != nil {
-		log.Fatalf("could not load config, %s", err)
-	}
-
+	cfg := config.NewDefaultConfig()
 	mr, err := config.NewMigrationReader(cfg)
 	if err != nil {
 		log.Fatalln(err)

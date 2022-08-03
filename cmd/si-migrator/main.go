@@ -16,10 +16,10 @@ package main
 
 import (
 	"fmt"
-	boshcli "github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh/cli"
 	"os"
 
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh"
+	boshcli "github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/bosh/cli"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/cmd"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/config"
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/credhub"
@@ -33,10 +33,7 @@ import (
 
 func main() {
 	defer recoverConfigLoader()
-	cfg, err := config.NewDefaultConfig()
-	if err != nil {
-		log.Fatalln(err)
-	}
+	cfg := config.NewDefaultConfig()
 
 	commandExists := func(args []string) (*cobra.Command, bool) {
 		noopCmd := cmd.CreateRootCommand(

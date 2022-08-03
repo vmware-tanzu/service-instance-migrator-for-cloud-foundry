@@ -151,7 +151,7 @@ type CCDBProperties struct {
 	SSHHost, SSHUsername, SSHPrivateKey     string
 }
 
-func NewDefaultConfig() (*Config, error) {
+func NewDefaultConfig() *Config {
 	configDir := ""
 
 	if cfgHome, ok := os.LookupEnv("SI_MIGRATOR_CONFIG_HOME"); ok {
@@ -159,16 +159,16 @@ func NewDefaultConfig() (*Config, error) {
 	}
 
 	if configFile, ok := os.LookupEnv("SI_MIGRATOR_CONFIG_FILE"); ok {
-		return New(configDir, configFile), nil
+		return New(configDir, configFile)
 	}
 
 	if _, ok := hasSuffix(configDir); ok {
 		configFile := configDir
 		configDir, _ = filepath.Split(configFile)
-		return New(configDir, configFile), nil
+		return New(configDir, configFile)
 	}
 
-	return New(configDir, ""), nil
+	return New(configDir, "")
 }
 
 func New(configDir string, configFile string) *Config {
