@@ -60,7 +60,7 @@ chmod +x /usr/local/bin/service-instance-migrator
 ```shell
 VERSION=v0.0.8
 wget -q https://github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/releases/download/${VERSION}/service-instance-migrator-linux-amd64.tgz
-tar -xvf service-instance-migrator-darwin-amd64.tgz -C /usr/local/bin
+tar -xvf service-instance-migrator-linux-amd64.tgz -C /usr/local/bin
 chmod +x /usr/local/bin/service-instance-migrator
 ```
 
