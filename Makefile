@@ -124,7 +124,7 @@ release: $(SI_MIGRATOR_SOURCES) ## Cross-compile binary for various operating sy
 .PHONY: lint-prepare
 lint-prepare:
 	@echo "Installing latest golangci-lint"
-	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.47.1
+	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.51.2
 	@echo "[OK] golangci-lint installed"
 
 .PHONY: lint
