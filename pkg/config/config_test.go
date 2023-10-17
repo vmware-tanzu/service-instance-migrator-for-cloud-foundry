@@ -15,12 +15,13 @@
 package config
 
 import (
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/stretchr/testify/require"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewDefaultConfig(t *testing.T) {
@@ -208,8 +209,8 @@ func TestNewConfig(t *testing.T) {
 					Migrators: []Migrator{
 						{
 							Name: "sqlserver",
-							Value: map[string]interface{}{
-								"source_ccdb": map[interface{}]interface{}{
+							Value: map[string]any{
+								"source_ccdb": map[string]interface{}{
 									"db_host":           "192.168.11.24",
 									"db_username":       "tas1_ccdb_username",
 									"db_password":       "tas1_ccdb_password",
@@ -219,7 +220,7 @@ func TestNewConfig(t *testing.T) {
 									"ssh_private_key":   "/tmp/om1_rsa_key",
 									"ssh_tunnel":        true,
 								},
-								"target_ccdb": map[interface{}]interface{}{
+								"target_ccdb": map[string]interface{}{
 									"db_host":           "192.168.12.24",
 									"db_username":       "tas2_ccdb_username",
 									"db_password":       "tas2_ccdb_password",
@@ -233,8 +234,8 @@ func TestNewConfig(t *testing.T) {
 						},
 						{
 							Name: "ecs",
-							Value: map[string]interface{}{
-								"source_ccdb": map[interface{}]interface{}{
+							Value: map[string]any{
+								"source_ccdb": map[string]interface{}{
 									"db_host":           "192.168.11.24",
 									"db_username":       "tas1_ccdb_username",
 									"db_password":       "tas1_ccdb_password",
@@ -244,7 +245,7 @@ func TestNewConfig(t *testing.T) {
 									"ssh_private_key":   "/tmp/om1_rsa_key",
 									"ssh_tunnel":        true,
 								},
-								"target_ccdb": map[interface{}]interface{}{
+								"target_ccdb": map[string]interface{}{
 									"db_host":           "192.168.12.24",
 									"db_username":       "tas2_ccdb_username",
 									"db_password":       "tas2_ccdb_password",
@@ -258,10 +259,10 @@ func TestNewConfig(t *testing.T) {
 						},
 						{
 							Name: "mysql",
-							Value: map[string]interface{}{
+							Value: map[string]any{
 								"backup_type":      "minio",
 								"backup_directory": "/tmp/mysql-backup",
-								"minio": map[interface{}]interface{}{
+								"minio": map[string]interface{}{
 									"alias":       "ecs-blobstore",
 									"url":         "https://object.example.com:9021",
 									"access_key":  "blobstore_access_key",
@@ -270,7 +271,7 @@ func TestNewConfig(t *testing.T) {
 									"bucket_path": "p.mysql",
 									"insecure":    false,
 								},
-								"scp": map[interface{}]interface{}{
+								"scp": map[string]interface{}{
 									"username":              "mysql",
 									"hostname":              "mysql-backup.example.com",
 									"port":                  22,
