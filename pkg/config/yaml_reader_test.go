@@ -15,14 +15,15 @@
 package config_test
 
 import (
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/stretchr/testify/require"
-	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/config"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/stretchr/testify/require"
+	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/config"
 )
 
 func TestNewReader_GetMigration(t *testing.T) {
@@ -47,8 +48,8 @@ func TestNewReader_GetMigration(t *testing.T) {
 				Migrators: []config.Migrator{
 					{
 						Name: "sqlserver",
-						Value: map[string]interface{}{
-							"source_ccdb": map[interface{}]interface{}{
+						Value: map[string]any{
+							"source_ccdb": map[string]interface{}{
 								"db_host":           "192.168.11.24",
 								"db_username":       "tas1_ccdb_username",
 								"db_password":       "tas1_ccdb_password",
@@ -58,7 +59,7 @@ func TestNewReader_GetMigration(t *testing.T) {
 								"ssh_private_key":   "/tmp/om1_rsa_key",
 								"ssh_tunnel":        true,
 							},
-							"target_ccdb": map[interface{}]interface{}{
+							"target_ccdb": map[string]interface{}{
 								"db_host":           "192.168.12.24",
 								"db_username":       "tas2_ccdb_username",
 								"db_password":       "tas2_ccdb_password",
@@ -86,11 +87,11 @@ func TestNewReader_GetMigration(t *testing.T) {
 				Migrators: []config.Migrator{
 					{
 						Name: "sqlserver",
-						Value: map[string]interface{}{
-							"source_ccdb": map[interface{}]interface{}{
+						Value: map[string]any{
+							"source_ccdb": map[string]interface{}{
 								"ssh_tunnel": false,
 							},
-							"target_ccdb": map[interface{}]interface{}{
+							"target_ccdb": map[string]interface{}{
 								"ssh_tunnel": false,
 							},
 						},
