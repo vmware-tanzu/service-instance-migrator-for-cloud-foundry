@@ -34,7 +34,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
-          go-version: ^1.17
+          go-version: ^1.18
       - name: Install Ginkgo
         run: go install -mod=mod github.com/onsi/ginkgo/ginkgo
         shell: bash
