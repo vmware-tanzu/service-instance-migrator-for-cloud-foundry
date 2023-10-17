@@ -1,12 +1,12 @@
 module github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry
 
-go 1.18
+go 1.19
 
 require (
 	code.cloudfoundry.org/credhub-cli v0.0.0-20231016130351-b222b8e0beb7
 	code.cloudfoundry.org/tlsconfig v0.0.0-20231017135636-f0e44068c22f
 	github.com/DATA-DOG/go-sqlmock v1.5.0
-	github.com/aws/aws-sdk-go v1.45.26
+	github.com/aws/aws-sdk-go v1.45.27
 	github.com/cloudfoundry-community/go-cfclient v0.0.0-20220930021109-9c4e6c59ccf1
 	github.com/cloudfoundry/bosh-cli v6.4.1+incompatible
 	github.com/cloudfoundry/bosh-utils v0.0.406
