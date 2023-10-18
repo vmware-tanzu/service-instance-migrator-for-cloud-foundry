@@ -20,7 +20,7 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	golog "log"
 	"net"
 	"net/http"
@@ -74,7 +74,7 @@ func NewClientFactory() ClientFactoryFunc {
 			KeepAlive: 30 * time.Second,
 		}).DialContext
 		if len(allProxy) > 0 {
-			socks := proxy.NewSocks5Proxy(proxy.NewHostKey(), golog.New(ioutil.Discard, "", golog.LstdFlags), 1*time.Minute)
+			socks := proxy.NewSocks5Proxy(proxy.NewHostKey(), golog.New(io.Discard, "", golog.LstdFlags), 1*time.Minute)
 			dialContextFunc = boshhttp.SOCKS5DialContextFuncFromAllProxy(allProxy, socks)
 		}
 
@@ -120,7 +120,7 @@ func (c ClientImpl) GetCreds(ref string) (map[string][]map[string]interface{}, e
 		return nil, fmt.Errorf("failed to get credentials, name '%s', status '%s'", ref, http.StatusText(res.StatusCode))
 	}
 
-	content, err := ioutil.ReadAll(res.Body)
+	content, err := io.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
 		return nil, err
@@ -156,7 +156,7 @@ func (c ClientImpl) getAccessToken(client HTTPClient) (map[string]interface{}, e
 		return nil, err
 	}
 
-	content, err := ioutil.ReadAll(res.Body)
+	content, err := io.ReadAll(res.Body)
 	_ = res.Body.Close()
 	if err != nil {
 		return nil, err

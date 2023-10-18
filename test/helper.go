@@ -20,7 +20,6 @@ package test
 import (
 	"fmt"
 	"go/build"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"os/exec"
@@ -47,10 +46,10 @@ import (
 )
 
 const (
-	packagePath = "github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/cmd/si-migrator"
-	ExportOrgName     = "tas1-test-org"
-	ImportOrgName     = "tas2-test-org"
-	SpaceName   = "si-migrator-test-space"
+	packagePath   = "github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/cmd/si-migrator"
+	ExportOrgName = "tas1-test-org"
+	ImportOrgName = "tas2-test-org"
+	SpaceName     = "si-migrator-test-space"
 )
 
 var ServiceInstanceMigratorPath string
@@ -182,7 +181,7 @@ func deleteServices(t *testing.T, client cf.Client, orgName string, spaceName st
 		err = client.DeleteServiceInstance(si.Guid, false, true)
 		require.NoError(t, err, "error deleting service instance %s", si.Name)
 		log.Infoln("Waiting for service instance to delete")
-		err = waitForReady(10 * time.Minute, client, si.Guid, "delete")
+		err = waitForReady(10*time.Minute, client, si.Guid, "delete")
 		require.NoError(t, err, "error deleting service instance %s", si.Name)
 		log.Infof("Service instance %s is deleted", si.Name)
 	}
@@ -239,13 +238,13 @@ func createSpace(t *testing.T, client cf.Client, spaceName string, orgGuid strin
 
 func createUserProvidedServiceInstance(t *testing.T, client cf.Client, spaceGuid string) {
 	_, err := client.CreateUserProvidedServiceInstance(cfclient.UserProvidedServiceInstanceRequest{
-		Name:      "si-migrator-ups",
+		Name: "si-migrator-ups",
 		Credentials: map[string]interface{}{
 			"username": "admin",
 			"password": "secret",
 		},
 		SpaceGuid: spaceGuid,
-		Tags: []string{"tag1", "tag2"},
+		Tags:      []string{"tag1", "tag2"},
 	})
 	require.NoError(t, err, "error creating user provided service instance")
 }
@@ -255,16 +254,16 @@ func createCredhubService(t *testing.T, client cf.Client, spaceGuid string) {
 	require.NoError(t, err, "error getting space by guid %s", spaceGuid)
 	serviceCredentials := map[string]interface{}{"username": "admin", "password": "password1234"}
 	si := createManagedServiceInstance(t, client, space, "database1", "credhub-broker", "default", serviceCredentials)
-	err = waitForReady(10 * time.Minute, client, si.Guid, "create")
+	err = waitForReady(10*time.Minute, client, si.Guid, "create")
 	require.NoError(t, err, "error creating %s service instance %s", "credhub", si.Name)
 	createApp(t, client, space, "secure-credentials-demo", si)
 }
 
-func createMySQLService(t *testing.T, client cf.Client, spaceGuid string)  {
+func createMySQLService(t *testing.T, client cf.Client, spaceGuid string) {
 	space, err := client.GetSpaceByGuid(spaceGuid)
 	require.NoError(t, err, "error getting space by guid %s", spaceGuid)
 	si := createManagedServiceInstance(t, client, space, "mysqldb", "dedicated-mysql-broker", "db-small", nil)
-	err = waitForReady(10 * time.Minute, client, si.Guid, "create")
+	err = waitForReady(10*time.Minute, client, si.Guid, "create")
 	require.NoError(t, err, "error creating %s service instance %s", "p.mysql", si.Name)
 	createApp(t, client, space, "spring-music", si)
 }
@@ -273,7 +272,7 @@ func createSQLServerService(t *testing.T, client cf.Client, spaceGuid string) {
 	space, err := client.GetSpaceByGuid(spaceGuid)
 	require.NoError(t, err, "error getting space by guid %s", spaceGuid)
 	si := createManagedServiceInstance(t, client, space, "sql-test", "SQLServer", "sharedVM", nil)
-	err = waitForReady(10 * time.Minute, client, si.Guid, "create")
+	err = waitForReady(10*time.Minute, client, si.Guid, "create")
 	require.NoError(t, err, "error creating %s service instance %s", "SQLServer", si.Name)
 	createApp(t, client, space, "client-example", si)
 }
@@ -405,7 +404,7 @@ func initLogger(level string) {
 }
 
 func buildSIMigrator(t *testing.T) string {
-	tmpDir, err := ioutil.TempDir("", "si_artifacts")
+	tmpDir, err := os.TempDir("", "si_artifacts")
 	require.NoError(t, err, "Error generating a temp artifact dir")
 
 	executable := filepath.Join(tmpDir, path.Base(packagePath))
