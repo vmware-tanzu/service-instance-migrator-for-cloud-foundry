@@ -17,10 +17,10 @@ package httpclient
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"time"
 
 	boshhttp "github.com/cloudfoundry/bosh-utils/httpclient"
@@ -48,7 +48,7 @@ func New(
 	disableKeepAlives bool,
 	certPool *x509.CertPool,
 ) *http.Client {
-	socks5Proxy := proxy.NewSocks5Proxy(proxy.NewHostKey(), log.New(ioutil.Discard, "", log.LstdFlags), 1*time.Minute)
+	socks5Proxy := proxy.NewSocks5Proxy(proxy.NewHostKey(), log.New(os.Stdout, "", log.LstdFlags), 1*time.Minute)
 	dialContextFunc := boshhttp.SOCKS5DialContextFuncFromEnvironment(&net.Dialer{
 		Timeout:   30 * time.Second,
 		KeepAlive: 30 * time.Second,

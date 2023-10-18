@@ -18,7 +18,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/log"
@@ -93,7 +92,7 @@ func (r *RequestRetryable) Attempt() (bool, error) {
 		// forcing an EOF.
 		// This should not be necessary when the following CL gets accepted:
 		// https://go-review.googlesource.com/c/go/+/62891
-		_, _ = io.Copy(ioutil.Discard, r.response.Body)
+		_, _ = io.Copy(io.Discard, r.response.Body)
 
 		r.response.Body.Close()
 	}
@@ -153,16 +152,16 @@ func MakeReplayable(r *http.Request) (io.ReadCloser, error) {
 				return nil, fmt.Errorf("Seeking to beginning of seekable request body: %w", err)
 			}
 
-			return ioutil.NopCloser(seekableBody), nil
+			return io.NopCloser(seekableBody), nil
 		}
 	} else {
-		bodyBytes, err := ioutil.ReadAll(r.Body)
+		bodyBytes, err := io.ReadAll(r.Body)
 		if err != nil {
 			return originalBody, fmt.Errorf("Buffering request body: %w", err)
 		}
 
 		r.GetBody = func() (io.ReadCloser, error) {
-			return ioutil.NopCloser(bytes.NewReader(bodyBytes)), nil
+			return io.NopCloser(bytes.NewReader(bodyBytes)), nil
 		}
 	}
 

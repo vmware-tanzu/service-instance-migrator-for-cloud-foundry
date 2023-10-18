@@ -16,7 +16,7 @@ package db_test
 
 import (
 	"database/sql"
-	"io/ioutil"
+	"io"
 	"testing"
 
 	"github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry/pkg/migrate/cc/db"
@@ -31,7 +31,7 @@ import (
 )
 
 func init() {
-	log.SetOutput(ioutil.Discard)
+	log.SetOutput(io.Discard)
 }
 
 func TestCalculateSaltLength(t *testing.T) {

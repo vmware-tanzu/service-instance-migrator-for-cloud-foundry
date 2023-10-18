@@ -18,7 +18,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	gohttp "net/http"
 	gourl "net/url"
 
@@ -105,7 +104,7 @@ func (r ClientRequest) readResponse(resp *gohttp.Response) ([]byte, error) {
 		_ = Body.Close()
 	}(resp.Body)
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("error reading UAA response")
 	}

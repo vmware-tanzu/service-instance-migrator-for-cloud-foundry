@@ -16,7 +16,6 @@ package ssh
 
 import (
 	"errors"
-	"io/ioutil"
 	"net"
 	"os"
 	"time"
@@ -64,7 +63,7 @@ func NewTunnel(host, tunnelHost, tunnelUser,
 	var authMethods []ssh.AuthMethod
 	if tunnelPrivateKey != "" {
 		log.Debugf("Using private key %s", tunnelPrivateKey)
-		pem, err := ioutil.ReadFile(tunnelPrivateKey)
+		pem, err := os.ReadFile(tunnelPrivateKey)
 		if err != nil {
 			return nil, err
 		}
