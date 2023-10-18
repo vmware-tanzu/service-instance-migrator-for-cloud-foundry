@@ -19,7 +19,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v4
         with:
-          go-version: '^1.20.10'
+          go-version: '1.20'
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
       - name: Build
@@ -34,7 +34,7 @@ jobs:
       - name: Set up Go 1.x
         uses: actions/setup-go@v4
         with:
-          go-version: '^1.20.10'
+          go-version: '1.20'
       - name: Install Ginkgo
         run: go install -mod=mod github.com/onsi/ginkgo/ginkgo
         shell: bash
