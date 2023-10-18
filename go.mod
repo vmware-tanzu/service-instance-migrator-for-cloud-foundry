@@ -1,6 +1,6 @@
 module github.com/vmware-tanzu/service-instance-migrator-for-cloud-foundry
 
-go 1.19
+go 1.20
 
 require (
 	code.cloudfoundry.org/credhub-cli v0.0.0-20231016130351-b222b8e0beb7
