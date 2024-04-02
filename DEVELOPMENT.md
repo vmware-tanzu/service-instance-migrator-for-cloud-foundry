@@ -90,7 +90,7 @@ migration:
 EOF
 ```
 
-Then we can test exporting just the user-provided service instance bindings
+Then we can test exporting just mysql and the user-provided service instance bindings
 
 ```sh
 make test-export-space
