@@ -50,8 +50,9 @@ Run the tests
 make test-e2e
 ```
 
-If you just one to test migration of one service, then just include the migration config for that one service. You also do not need to migrate from one
-foundation to another. You can specify the same url for the Ops Manager in both source and target and export from one space to another.  Here's an example:
+If you only want to test the migration of a single service, then include the migration config for just that service. You also do not need to migrate from one
+foundation to another. You can specify the same `url` for the Ops Manager in both `source` and `target` foundations of the config and that will export from one 
+space to another.  Here's an example:
 
 ```sh
 cat ./test/e2e/si-migrator.yml <<EOF
