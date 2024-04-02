@@ -54,7 +54,7 @@ If you just one to test migration of one service, then just include the migratio
 foundation to another. You can specify the same url for the Ops Manager in both source and target and export from one space to another.  Here's an example:
 
 ```sh
-cat ~/workspace/service-instance-migrator-for-cloud-foundry/test/e2e/si-migrator.yml <<EOF
+cat ./test/e2e/si-migrator.yml <<EOF
 debug: true
 exclude_orgs:
   - system
