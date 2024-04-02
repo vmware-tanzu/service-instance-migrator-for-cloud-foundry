@@ -446,9 +446,7 @@ func initLogger(level string) {
 }
 
 func buildSIMigrator(t *testing.T) string {
-	tmpDir, err := os.TempDir("", "si_artifacts")
-	require.NoError(t, err, "Error generating a temp artifact dir")
-
+	tmpDir := os.TempDir()
 	executable := filepath.Join(tmpDir, path.Base(packagePath))
 	if runtime.GOOS == "windows" {
 		executable = executable + ".exe"
