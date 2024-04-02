@@ -273,7 +273,7 @@ func (c OpsManager) ValidateSSH() error {
 	return nil
 }
 
-/// initConfig reads in config file and ENV variables if set.
+// initConfig reads in config file and ENV variables if set.
 func (c *Config) initViperConfig() {
 	v := viper.New()
 	if c.ConfigFile != "" {

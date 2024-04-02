@@ -50,4 +50,51 @@ Run the tests
 make test-e2e
 ```
 
+If you only want to test the migration of a single service, then include the migration config for just that service. You also do not need to migrate from one
+foundation to another. You can specify the same `url` for the Ops Manager in both `source` and `target` foundations of the config and that will export from one 
+space to another.  Here's an example:
+
+```sh
+cat ./test/e2e/si-migrator.yml <<EOF
+debug: true
+exclude_orgs:
+  - system
+  - p-spring-cloud-services
+  - p-dataflow
+foundations:
+  source:
+    url: https://opsman.east.acme.com
+    username: admin
+    password: 'XPrQWi9xvwta$Ng'
+    hostname: opsman.east.acme.com
+    private_key: ~/.ssh/acme-east-prod
+    ssh_user: "ubuntu"
+  target:
+    url: https://opsman.east.acme.com
+    username: admin
+    password: 'XPrQWi9xvwta$Ng'
+    hostname: opsman.east.acme.com
+    private_key: ~/.ssh/acme-east-prod
+    ssh_user: "ubuntu"
+migration:
+  use_default_migrator: true
+  migrators:
+   - name: mysql
+     migrator:
+       backup_type: scp
+       scp:
+         username: ubuntu
+         hostname: opsman.east.acme.com
+         port: 22
+         destination_directory: /home/ubuntu
+         private_key: ~/.ssh/acme-east-prod
+EOF
+```
+
+Then we can test exporting just mysql and the user-provided service instance bindings
+
+```sh
+make test-export-space
+```
+
 Run `make help` for all other tasks.

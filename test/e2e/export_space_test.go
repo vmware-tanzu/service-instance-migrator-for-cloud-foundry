@@ -29,6 +29,7 @@ import (
 
 func Test_ExportOrgSpaceCommand(t *testing.T) {
 	test.Setup(t)
+	test.SetupExportCommand(t)
 
 	exportOrgSpace(t)
 }
