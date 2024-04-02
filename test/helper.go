@@ -67,10 +67,7 @@ func SetupExportCommand(t *testing.T) cf.Client {
 	org := createOrg(t, client, ExportOrgName)
 	space := createSpace(t, client, SpaceName, org.Guid)
 
-	createUserProvidedServiceInstance(t, client, space.Guid)
-	createCredhubService(t, client, space.Guid)
-	//createSQLServerService(t, client, space.Guid)
-	createMySQLService(t, client, space.Guid)
+	createMigrationServices(t, client, space.Guid)
 
 	return client
 }
@@ -236,6 +233,47 @@ func createSpace(t *testing.T, client cf.Client, spaceName string, orgGuid strin
 	return space
 }
 
+func createMigrationServices(t *testing.T, client cf.Client, spaceGuid string) {
+	createUserProvidedServiceInstance(t, client, spaceGuid)
+
+	cwd, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("could not get current working dir, %s", err)
+	}
+
+	_ = os.Unsetenv("SI_MIGRATOR_CONFIG_FILE")
+	_ = os.Unsetenv("SI_MIGRATOR_CONFIG_HOME")
+	err = os.Setenv("SI_MIGRATOR_CONFIG_HOME", cwd)
+	if err != nil {
+		log.Fatalf("could not set SI_MIGRATOR_CONFIG_HOME to %s: %v", cwd, err)
+	}
+
+	cfg := config.New("", path.Join(cwd, "si-migrator.yml"))
+	if err != nil {
+		log.Fatalf("could not load config, %s", err)
+	}
+
+	mr, err := config.NewMigrationReader(cfg)
+	require.NoErrorf(t, err, "error reading migrator from config: %s", cfg.ConfigFile)
+
+	var migration *config.Migration
+	migration, err = mr.GetMigration()
+	require.NoErrorf(t, err, "error reading migrator from config: %s", cfg.ConfigFile)
+
+	if migration != nil {
+		for _, m := range migration.Migrators {
+			switch m.Name {
+			case migrate.MySQL.String():
+				createMySQLService(t, client, spaceGuid)
+			case migrate.SQLServer.String():
+				createSQLServerService(t, client, spaceGuid)
+			case migrate.CredHub.String():
+				createCredhubService(t, client, spaceGuid)
+			}
+		}
+	}
+}
+
 func createUserProvidedServiceInstance(t *testing.T, client cf.Client, spaceGuid string) {
 	_, err := client.CreateUserProvidedServiceInstance(cfclient.UserProvidedServiceInstanceRequest{
 		Name: "si-migrator-ups",
@@ -287,16 +325,17 @@ func createManagedServiceInstance(t *testing.T, client cf.Client, space cfclient
 			break
 		}
 	}
-	if broker.Name != brokerName {
-		t.Fatalf("failed to find broker by name: %s", brokerName)
-	}
+
 	var plans []cfclient.ServicePlan
 	plans, err = client.ListServicePlansByQuery(url.Values{
 		"q": []string{"service_broker_guid:" + broker.Guid},
 	})
 	require.NoError(t, err, "error listing plans by broker guid: %s", broker.Guid)
 
-	servicePlan := plans[0] // default to the first plan
+	var servicePlan cfclient.ServicePlan
+	if len(plans) > 0 {
+		servicePlan = plans[0] // default to the first plan
+	}
 	for i, p := range plans {
 		if p.Name == planName {
 			servicePlan = plans[i]
