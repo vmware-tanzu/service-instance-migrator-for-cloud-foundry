@@ -325,6 +325,9 @@ func createManagedServiceInstance(t *testing.T, client cf.Client, space cfclient
 			break
 		}
 	}
+	if broker.Name != brokerName {
+		t.Fatalf("failed to find broker by name: %s", brokerName)
+	}
 
 	var plans []cfclient.ServicePlan
 	plans, err = client.ListServicePlansByQuery(url.Values{
